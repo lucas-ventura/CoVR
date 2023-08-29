@@ -200,7 +200,7 @@ If you use this dataset and/or this code in your work, please cite our [paper](h
 @article{ventura23covr,
     title     = {{CoVR}: Learning Composed Video Retrieval from Web Video Captions},
     author    = {Lucas Ventura and Antoine Yang and Cordelia Schmid and G{\"u}l Varol},
-    journal = {arXiv:2308.14746},
+    journal   = {arXiv:2308.14746},
     year      = {2023}
   }
 ```
