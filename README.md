@@ -112,8 +112,6 @@ To download the images, the urls are in the [FashionIQ repository](https://githu
 
 <details><summary>(Optional) Download pre-trained models</summary>
 
-``
-
 To download the checkpoints, run:
 ```bash
 bash tools/scripts/download_pretrained_models.sh
