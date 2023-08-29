@@ -88,7 +88,7 @@ bash tools/scripts/download_annotations.sh cirr
 To download the images, follow the instructions in the [CIRR repository](https://github.com/lil-lab/nlvr/tree/master/nlvr2#direct-image-download). The default folder structure is the following:
 
 ```markdown
-📦 covr
+📦 CoVR
  ┣ 📂 datasets  
  ┃ ┣ 📂 CIRR
  ┃ ┃ ┣ 📂 images
