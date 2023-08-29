@@ -14,7 +14,7 @@
 </div>
 
 ## Description
-This repository contains the code for the paper ["CoVR: Learning Composed Video Retrieval from Web Video Captions"](https://arxiv.org/abs/2308.TODO).
+This repository contains the code for the paper ["CoVR: Learning Composed Video Retrieval from Web Video Captions"](https://arxiv.org/abs/2308.14746).
 
 Please visit our [webpage](http://imagine.enpc.fr/~ventural/covr) for more details.
 
@@ -194,7 +194,7 @@ There are many pre-defined experiments from the paper in ``configs/experiments``
 </details>
 
 ## Citation
-If you use this dataset and/or this code in your work, please cite our [paper](htto://TODO):
+If you use this dataset and/or this code in your work, please cite our [paper](https://arxiv.org/abs/2308.14746):
 
 ```markdown
 @article{ventura23covr,
