@@ -3,6 +3,22 @@
 # CoVR: Composed Video Retrieval
 ## Learning Composed Video Retrieval from Web Video Captions
 
+<a href="https://ps.is.mpg.de/person/nathanasiou"><strong>Lucas Ventura</strong></a>
+·
+<a href="https://antoyang.github.io/"><strong>Antoine Yang</strong></a>
+·
+<a href="https://www.di.ens.fr/willow/people_webpages/cordelia/"><strong>Cordelia Schmid</strong></a>
+·
+<a href="https://imagine.enpc.fr/~varolg"><strong>G&#252;l Varol</strong></a>
+
+[![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2308.14746)
+[![Project Page](https://img.shields.io/badge/Project-Page-blue?style=flat&logo=Google%20chrome&logoColor=blue)](https://imagine.enpc.fr/~ventural/covr/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)]()
+[![GitHub Stars](https://img.shields.io/github/stars/lucas-ventura/CoVR?style=social)](https://github.com/lucas-ventura/CoVR)
+
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/covr-learning-composed-video-retrieval-from/zero-shot-composed-image-retrieval-zs-cir-on-1)](https://paperswithcode.com/sota/zero-shot-composed-image-retrieval-zs-cir-on-1?p=covr-learning-composed-video-retrieval-from)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/covr-learning-composed-video-retrieval-from/zero-shot-composed-image-retrieval-zs-cir-on-2)](https://paperswithcode.com/sota/zero-shot-composed-image-retrieval-zs-cir-on-2?p=covr-learning-composed-video-retrieval-from)
+
 ![CoVR teaser gif](tools/examples/teaser.gif)
 
 </div>
