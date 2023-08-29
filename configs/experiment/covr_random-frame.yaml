@@ -1,0 +1,10 @@
+# @package _global_
+
+run_name: "random-frame"
+
+defaults:
+  - override /data: webvid-covr.yaml
+  - override /test: webvid-covr.yaml
+
+data:
+  vid_query_method: "random"

@@ -1,0 +1,22 @@
+dataname: cirr
+_target_: src.data.cirr.CIRRDataModule
+
+# Paths
+dataset_dir: ${paths.datasets_dir}/CIRR
+
+batch_size: ${machine.batch_size}
+num_workers: ${machine.num_workers}
+
+annotation:
+  train: ${paths.work_dir}/annotation/cirr/cap.rc2.train.json
+  val: ${paths.work_dir}/annotation/cirr/cap.rc2.val.json
+
+img_dirs:
+  train: ${data.dataset_dir}/images/train
+  val: ${data.dataset_dir}/images/dev
+
+emb_dirs:
+  train: ${data.dataset_dir}/blip-embs-large/train
+  val: ${data.dataset_dir}/blip-embs-large/dev
+
+image_size: 384

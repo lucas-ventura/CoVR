@@ -1,0 +1,15 @@
+modelname: blip-large
+_target_: src.model.blip_cir.blip_cir
+
+ckpt_path: ${model.ckpt.path}
+
+model:
+  _target_: src.model.blip_cir.BLIPCir
+  med_config: ${paths.work_dir}/configs/med_config.json
+  image_size: ${data.image_size}
+  vit: "large"
+  vit_grad_ckpt: True
+  vit_ckpt_layer: 12
+  embed_dim: 256
+  train_vit: False
+  loss: ${model.loss}

@@ -1,0 +1,12 @@
+# @package _global_
+
+defaults:
+  - override /data: webvid-covr.yaml
+  - override /model: blip-large_late-fusion.yaml
+  - override /test: webvid-covr_late-fusion.yaml
+
+val: False
+
+model:
+  optimizer:
+    lr: 1e-4

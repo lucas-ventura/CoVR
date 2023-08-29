@@ -1,0 +1,17 @@
+# @package _global_
+
+defaults:
+  - override /data: fashioniq-dress.yaml
+  - override /test: fashioniq-dress.yaml
+  - override /model/ckpt: webvid-covr.yaml
+
+model:
+  optimizer:
+    lr: 1e-4
+
+machine:
+  batch_size: 256
+
+trainer:
+  max_epochs: 6
+  print_interval: 2

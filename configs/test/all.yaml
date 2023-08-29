@@ -1,0 +1,6 @@
+defaults:
+  - cirr.yaml
+  - webvid-covr.yaml
+  - fashioniq-dress.yaml
+  - fashioniq-shirt.yaml
+  - fashioniq-toptee.yaml

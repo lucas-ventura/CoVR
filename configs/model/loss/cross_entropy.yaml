@@ -1,0 +1,2 @@
+_target_: src.model.loss.CrossEntropyLoss
+name: ce

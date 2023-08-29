@@ -1,0 +1,13 @@
+# @package _global_
+
+defaults:
+  - override /data: cirr.yaml
+  - override /test: cirr.yaml
+  # - override /model/ckpt: webvid-covr.yaml
+
+model:
+  optimizer:
+    lr: 1e-4
+
+trainer:
+  max_epochs: 6

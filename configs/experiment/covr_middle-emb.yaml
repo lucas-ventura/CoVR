@@ -1,0 +1,14 @@
+# @package _global_
+
+run_name: "middle_emb"
+
+defaults:
+  - override /data: webvid-covr.yaml
+  - override /test: webvid-covr.yaml
+
+data:
+  emb_pool: "middle"
+
+test:
+  webvid_covr:
+    emb_pool: "middle"

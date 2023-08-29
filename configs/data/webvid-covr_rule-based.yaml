@@ -1,0 +1,26 @@
+dataname: webvid-covr-rule-based
+_target_: src.data.webvid_covr_rulebased.WebVidCoVRDataModuleRuleBased
+
+image_size: 384
+iterate: "pth2"
+vid_query_method: middle
+vid_frames: 1
+emb_pool: query
+
+# Paths
+dataset_dir: ${paths.datasets_dir}/WebVid
+
+batch_size: ${machine.batch_size}
+num_workers: ${machine.num_workers}
+
+annotation:
+  train: ${paths.work_dir}/annotation/webvid-covr/webvid2m-covr_train.csv
+  val: ${paths.work_dir}/annotation/webvid-covr/webvid8m-covr_val.csv
+
+vid_dirs:
+  train: ${data.dataset_dir}/2M/train
+  val: ${data.dataset_dir}/8M/train
+
+emb_dirs:
+  train: ${data.dataset_dir}/2M/blip-vid-embs-${model.model.vit}-all
+  val: ${data.dataset_dir}/8M/blip-vid-embs-${model.model.vit}-all

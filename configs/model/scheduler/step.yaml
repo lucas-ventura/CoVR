@@ -1,0 +1,5 @@
+_target_: src.tools.scheduler.StepSchedule
+
+init_lr: ${model.optimizer.lr}
+decay_rate: ${model.optimizer.weight_decay}
+min_lr: 0

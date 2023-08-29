@@ -1,0 +1,3 @@
+defaults:
+  - cirr.yaml
+  - webvid-covr.yaml

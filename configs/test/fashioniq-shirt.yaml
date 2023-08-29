@@ -1,0 +1,18 @@
+fashioniq-shirt:
+  dataname: fashioniq-shirt
+  _target_: src.data.fashioniq.FashionIQTestDataModule
+
+  batch_size: ${machine.batch_size}
+  num_workers: ${machine.num_workers}
+
+  annotation: ${paths.work_dir}/annotation/fashion-iq/cap.shirt.val.json
+  targets: ${paths.work_dir}/annotation/fashion-iq/split.shirt.val.json
+
+  img_dirs: ${paths.datasets_dir}/fashion-iq/images/
+  emb_dirs: ${paths.datasets_dir}/fashion-iq/blip-embs-large/
+
+  image_size: 384
+
+  test:
+    _target_: src.test.fashioniq.TestFashionIQ
+    category: shirt

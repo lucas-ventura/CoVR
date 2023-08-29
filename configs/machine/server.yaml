@@ -1,0 +1,8 @@
+name: server
+
+# specific attributes to this machine
+batch_size: 512
+num_workers: 8
+
+defaults:
+  - default@paths

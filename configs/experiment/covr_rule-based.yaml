@@ -1,0 +1,8 @@
+# @package _global_
+
+defaults:
+  - override /data: webvid-covr_rule-based.yaml
+  - override /test: main.yaml
+
+trainer:
+  print_interval: 2

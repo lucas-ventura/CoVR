@@ -1,0 +1,20 @@
+webvid_covr_visual:
+  dataname: webvid-covr_visual
+  _target_: src.data.webvid_covr.WebVidCoVRTestDataModule
+
+  image_size: 384
+
+  vid_query_method: middle
+  vid_frames: 1
+  emb_pool: mean
+
+  batch_size: ${machine.batch_size}
+  num_workers: ${machine.num_workers}
+
+  # Paths
+  annotation: ${paths.work_dir}/annotation/webvid-covr/webvid8m-covr_test.csv
+  vid_dirs: ${paths.datasets_dir}/WebVid/8M/train
+  emb_dirs: ${paths.datasets_dir}/WebVid/8M/blip-vid-embs-${model.model.vit}-all
+
+  test:
+    _target_: src.test.webvid_covr_exp.TestWebVidCoVRVisualOnly

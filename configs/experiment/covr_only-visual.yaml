@@ -1,0 +1,20 @@
+# @package _global_
+
+defaults:
+  - override /data: webvid-covr.yaml
+  - override /test: webvid-covr_visual.yaml
+  - override /model: blip-large_visual.yaml
+
+val: False
+
+run_name: only-visual
+
+machine:
+  batch_size: 64 # We have to reduce the learning rate because we are training the ViT
+
+model:
+  optimizer:
+    lr: 0.125e-4 # We have to reduce the learning rate because we are reducing the batch size
+
+data:
+  emb_pool: mean

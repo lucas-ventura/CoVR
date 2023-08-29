@@ -1,0 +1,4 @@
+defaults:
+  - fashioniq-base.yaml
+
+category: toptee

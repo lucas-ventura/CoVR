@@ -1,0 +1,23 @@
+default_root_dir: ${paths.output_dir}
+
+max_epochs: 5
+
+accelerator: gpu
+devices: 1
+
+# mixed precision for extra speed-up
+precision: "32-true"
+
+# perform a validation loop every N training epochs
+# check_val_every_n_epoch: 1
+
+log_interval: 1
+print_interval: 10
+save_ckpt: all
+
+fabric:
+  _target_: lightning.Fabric
+  accelerator: ${trainer.accelerator}
+  devices: ${trainer.devices}
+  precision: ${trainer.precision}
+  loggers: ${trainer.logger}

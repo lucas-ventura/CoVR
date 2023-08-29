@@ -1,0 +1,8 @@
+# @package _global_
+
+defaults:
+  - override /data: webvid-covr.yaml
+  - override /test: webvid-covr_text.yaml
+  - override /model: blip-large_text.yaml
+
+val: False

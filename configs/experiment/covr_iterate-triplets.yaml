@@ -1,0 +1,14 @@
+# @package _global_
+
+defaults:
+  - override /data: webvid-covr.yaml
+  - override /test: main.yaml
+
+run_name: "iterate-triplets"
+
+data:
+  iterate: "triplets"
+
+trainer:
+  max_epochs: 2
+  print_interval: 1

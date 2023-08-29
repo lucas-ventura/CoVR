@@ -1,0 +1,28 @@
+dataname: fashioniq-${data.category}
+_target_: src.data.fashioniq.FashionIQDataModule
+
+# Paths
+dataset_dir: ${paths.datasets_dir}/fashion-iq
+
+batch_size: ${machine.batch_size}
+num_workers: ${machine.num_workers}
+
+annotation:
+  train: ${paths.work_dir}/annotation/fashion-iq/cap.${data.category}.train.json
+  val: ${paths.work_dir}/annotation/fashion-iq/cap.${data.category}.val.json
+
+targets:
+  train: ${paths.work_dir}/annotation/fashion-iq/split.${data.category}.train.json
+  val: ${paths.work_dir}/annotation/fashion-iq/split.${data.category}.val.json
+
+img_dirs:
+  train: ${data.dataset_dir}/images/
+  val: ${data.dataset_dir}/images/
+
+emb_dirs:
+  train: ${data.dataset_dir}/blip-embs-large/
+  val: ${data.dataset_dir}/blip-embs-large/
+
+image_size: 384
+
+category: ???
