@@ -1,2 +1,1 @@
-*.ipynb 
-tools/notebooks/
+*.ipynb linguist-vendored
