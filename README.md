@@ -16,6 +16,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)]()
 [![GitHub Stars](https://img.shields.io/github/stars/lucas-ventura/CoVR?style=social)](https://github.com/lucas-ventura/CoVR)
 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/covr-learning-composed-video-retrieval-from/composed-video-retrieval-covr-on-covr)](https://paperswithcode.com/sota/composed-video-retrieval-covr-on-covr?p=covr-learning-composed-video-retrieval-from)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/covr-learning-composed-video-retrieval-from/zero-shot-composed-image-retrieval-zs-cir-on-1)](https://paperswithcode.com/sota/zero-shot-composed-image-retrieval-zs-cir-on-1?p=covr-learning-composed-video-retrieval-from)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/covr-learning-composed-video-retrieval-from/zero-shot-composed-image-retrieval-zs-cir-on-2)](https://paperswithcode.com/sota/zero-shot-composed-image-retrieval-zs-cir-on-2?p=covr-learning-composed-video-retrieval-from)
 
