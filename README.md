@@ -3,7 +3,7 @@
 # CoVR: Composed Video Retrieval
 ## Learning Composed Video Retrieval from Web Video Captions
 
-<a href="https://ps.is.mpg.de/person/nathanasiou"><strong>Lucas Ventura</strong></a>
+<a href="http://lucasventura.com/"><strong>Lucas Ventura</strong></a>
 ·
 <a href="https://antoyang.github.io/"><strong>Antoine Yang</strong></a>
 ·
