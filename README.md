@@ -86,7 +86,7 @@ To use the WebVid-CoVR dataset, you will have to download the WebVid videos and 
 
 To download the annotations, run:
 ```bash
-bash tools/scripts/download_annotations.sh covr
+bash tools/scripts/download_annotation.sh covr
 ```
 
 To download the videos, install [`mpi4py`](https://mpi4py.readthedocs.io/en/latest/install.html#) and run:
