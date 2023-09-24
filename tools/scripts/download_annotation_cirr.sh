@@ -12,9 +12,9 @@ echo -e "Downloading ${BLUE}CIRR Train${NC} annotations..."
 wget https://raw.githubusercontent.com/Cuberick-Orion/CIRR/cirr_dataset/captions/cap.rc2.train.json -q -O annotation/cirr/cap.rc2.train.json
 
 # Download Val annotations
-echo -e "${BLUE}Downloading ${BLUE}CIRR Val${NC} annotations..."
+echo -e "Downloading ${BLUE}CIRR Val${NC} annotations..."
 wget https://raw.githubusercontent.com/Cuberick-Orion/CIRR/cirr_dataset/captions/cap.rc2.val.json -q -O annotation/cirr/cap.rc2.val.json
 
 # Download Test annotations
-echo -e "${BLUE}Downloading ${BLUE}CIRR Test${NC} annotations..."
+echo -e "Downloading ${BLUE}CIRR Test${NC} annotations..."
 wget https://raw.githubusercontent.com/Cuberick-Orion/CIRR/cirr_dataset/captions/cap.rc2.test1.json -q -O annotation/cirr/cap.rc2.test1.json
