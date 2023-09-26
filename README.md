@@ -99,7 +99,7 @@ To use the CIRR dataset, you will have to download the CIRR images and the CIRR 
 
 To download the annotations, run:
 ```bash
-bash tools/scripts/download_annotations.sh cirr
+bash tools/scripts/download_annotation.sh cirr
 ```
 
 To download the images, follow the instructions in the [CIRR repository](https://github.com/lil-lab/nlvr/tree/master/nlvr2#direct-image-download). The default folder structure is the following:
@@ -119,7 +119,7 @@ To use the FashionIQ dataset, you will have to download the FashionIQ images and
 
 To download the annotations, run:
 ```bash
-bash tools/scripts/download_annotations.sh fiq
+bash tools/scripts/download_annotation.sh fiq
 ```
 
 To download the images, the urls are in the [FashionIQ repository](https://github.com/hongwang600/fashion-iq-metadata/tree/master/image_url). You can use the [this script](https://github.com/yanbeic/VAL/blob/master/download_fashion_iq.py) to download the images. Some missing images can also be found [here](https://github.com/XiaoxiaoGuo/fashion-iq/issues/18). All the images should be placed in the same folder (``datasets/fashion-iq/images``).
