@@ -1,3 +1,0 @@
-name: fashioniq-shirt-ft_covr
-
-path: ${paths.work_dir}/outputs/fashioniq-shirt/blip-large/webvid-covr/tv-False_loss-hnnce_lr-0.0001/base/ckpt_5.ckpt

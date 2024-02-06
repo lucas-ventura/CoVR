@@ -1,8 +1,8 @@
 # @package _global_
 
 defaults:
-  - override /data: fashioniq-shirt.yaml
-  - override /test: fashioniq-shirt.yaml
+  - override /data: fashioniq.yaml
+  - override /test: fashioniq.yaml
   - override /model/ckpt: webvid-covr.yaml
 
 model:

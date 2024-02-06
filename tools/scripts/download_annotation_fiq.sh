@@ -7,29 +7,34 @@ NC='\033[0m' # No Color
 # Create directory
 mkdir -p annotation/fashion-iq
 
+download_file() {
+    local url=$1
+    local path=$2
+    local file=$(basename "$url")
+    if [ ! -f "$path/$file" ]; then
+        echo -e "Downloading ${BLUE}$file${NC}..."
+        wget $url -q -P $path
+    else
+        echo -e "${BLUE}$file${NC} already exists, skipping download."
+    fi
+}
+
 # Download Train annotations
-echo -e "Downloading ${BLUE}fashion-iq Train${NC} annotations..."
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.dress.train.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.shirt.train.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.toptee.train.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/image_splits/split.dress.train.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/image_splits/split.shirt.train.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/image_splits/split.toptee.train.json -q -P annotation/fashion-iq/
+echo "Checking Fashion-IQ Train annotations..."
+download_file "https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.dress.train.json" "annotation/fashion-iq"
+download_file "https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.shirt.train.json" "annotation/fashion-iq"
+download_file "https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.toptee.train.json" "annotation/fashion-iq"
 
 # Download Val annotations
-echo -e "Downloading ${BLUE}fashion-iq Val${NC} annotations..."
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.dress.val.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.shirt.val.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.toptee.val.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/image_splits/split.dress.val.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/image_splits/split.shirt.val.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/image_splits/split.toptee.val.json -q -P annotation/fashion-iq/
+echo "Checking Fashion-IQ Val annotations..."
+download_file "https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.dress.val.json" "annotation/fashion-iq"
+download_file "https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.shirt.val.json" "annotation/fashion-iq"
+download_file "https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.toptee.val.json" "annotation/fashion-iq"
 
 # Download Test annotations
-echo -e "Downloading ${BLUE}fashion-iq Test${NC} annotations..."
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.dress.test.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.shirt.test.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.toptee.test.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/image_splits/split.dress.test.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/image_splits/split.shirt.test.json -q -P annotation/fashion-iq/
-wget https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/image_splits/split.toptee.test.json -q -P annotation/fashion-iq/
+echo "Checking Fashion-IQ Test annotations..."
+download_file "https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.dress.test.json" "annotation/fashion-iq"
+download_file "https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.shirt.test.json" "annotation/fashion-iq"
+download_file "https://raw.githubusercontent.com/XiaoxiaoGuo/fashion-iq/master/captions/cap.toptee.test.json" "annotation/fashion-iq"
+
+python tools/scripts/merge_fiq_annotations.py

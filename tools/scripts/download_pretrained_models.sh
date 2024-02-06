@@ -69,21 +69,8 @@ download_cirr() {
 
 # WebVid-CoVR + finetuned on FashionIQ
 download_fiq() {
-    # Dress
-    url="https://huggingface.co/lucas-ventura/CoVR/resolve/main/fashioniq-dress-ft_covr.ckpt"
-    dir="outputs/fashioniq-dress/blip-large/webvid-covr/tv-False_loss-hnnce_lr-0.0001/base"
-    filename="ckpt_5.ckpt"
-    download_checkpoint "$url" "$dir" "$filename"
-
-    # Shirt
-    url="https://huggingface.co/lucas-ventura/CoVR/resolve/main/fashioniq-shirt-ft_covr.ckpt"
-    dir="outputs/fashioniq-shirt/blip-large/webvid-covr/tv-False_loss-hnnce_lr-0.0001/base"
-    filename="ckpt_5.ckpt"
-    download_checkpoint "$url" "$dir" "$filename"
-
-    # Toptee
-    url="https://huggingface.co/lucas-ventura/CoVR/resolve/main/fashioniq-toptee-ft_covr.ckpt"
-    dir="outputs/fashioniq-toptee/blip-large/webvid-covr/tv-False_loss-hnnce_lr-0.0001/base"
+    url="https://huggingface.co/lucas-ventura/CoVR/resolve/main/fashioniq-all-ft_covr.ckpt"
+    dir="outputs/fashioniq-all/blip-large/webvid-covr/tv-False_loss-hnnce_lr-0.0001/base"
     filename="ckpt_5.ckpt"
     download_checkpoint "$url" "$dir" "$filename"
 }
