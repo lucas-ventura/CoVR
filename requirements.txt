@@ -1,0 +1,10 @@
+pytorch_lightning
+hydra-core
+lightning
+einops
+pandas
+opencv-python
+timm
+fairscale
+tabulate
+transformers

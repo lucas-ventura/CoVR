@@ -60,7 +60,12 @@ conda create --name covr
 conda activate covr
 ```
 
-Install the following packages inside the conda environment:
+To install the necessary packages, you can use the provided requirements.txt file:
+```bash
+python -m pip install -r requirements.txt
+```
+
+Alternatively, you can manually install the following packages inside the conda environment:
 
 ```bash
 python -m pip install pytorch_lightning --upgrade
