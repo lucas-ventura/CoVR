@@ -167,16 +167,16 @@ class FashionIQDataset(Dataset):
         for ann in self.annotation:
             assert (
                 ann["candidate"] in self.id2imgpth
-            ), f"Path to candidate {ann['candidate']} not found in {self.img_dir}"
+            ), f"Path to image candidate {ann['candidate']} not found in {self.img_dir}"
             assert (
                 ann["candidate"] in self.id2embpth
-            ), f"Path to candidate {ann['candidate']} not found in {self.emb_dir}"
+            ), f"Path to embedding candidate {ann['candidate']} not found in {self.emb_dir}"
             assert (
                 ann["target"] in self.id2imgpth
-            ), f"Path to target {ann['target']} not found"
+            ), f"Path to image target {ann['target']} not found"
             assert (
                 ann["target"] in self.id2embpth
-            ), f"Path to target {ann['target']} not found"
+            ), f"Path to embedding target {ann['target']} not found"
 
     def __len__(self) -> int:
         return len(self.annotation)
