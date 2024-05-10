@@ -68,17 +68,17 @@ class VideoDataset(Dataset):
         shard_id=0,
         num_shards=1,
         frames_video=15,
-        extention="mp4",
+        extension="mp4",
         save_dir=None,
     ):
         self.video_dir = Path(video_dir)
 
         if isinstance(todo_ids, (str, Path)):
-            todo_ids = read_txt(todo_ids)
+            todo_ids = get_ids(todo_ids)
 
-        found_paths = list(video_dir.glob(f"*/*.{extention}"))
+        found_paths = list(video_dir.glob(f"*/*.{extension}"))
         if todo_ids is not None:
-            video_paths = [video_dir / f"{v}.{extention}" for v in todo_ids]
+            video_paths = [video_dir / f"{v}.{extension}" for v in todo_ids]
             video_paths = list(set(video_paths) & set(found_paths))
         else:
             video_paths = found_paths
@@ -99,7 +99,7 @@ class VideoDataset(Dataset):
                 print("All videos are done")
                 exit()
 
-        assert len(self.video_ids) > 0, f"video_ids is empty"
+        assert len(self.video_ids) > 0, "video_ids is empty"
 
         # shard the dataset
         n_videos = len(self.video_ids)
@@ -197,3 +197,16 @@ def sample_frames(vlen, frames_per_video=15):
     frame_idxs = [(x[0] + x[1]) // 2 for x in ranges]
 
     return frame_idxs
+
+
+def get_ids(path):
+    suffix = Path(path).suffix
+    if suffix == ".csv":
+        df = pd.read_csv(path)
+        ids = set(df["pth2"].tolist())
+        ids = list(ids)
+        ids.sort()
+    else:
+        ids = read_txt(path)
+
+    return ids
