@@ -163,7 +163,7 @@ The command to launch a training experiment is the folowing:
 ```bash
 python train.py [OPTIONS]
 ```
-The parsing is done by using the powerful [Hydra](https://github.com/facebookresearch/hydra) library. You can override anything in the configuration by passing arguments like ``foo=value`` or ``foo.bar=value``.
+The parsing is done by using the powerful [Hydra](https://github.com/facebookresearch/hydra) library. You can override anything in the configuration by passing arguments like ``foo=value`` or ``foo.bar=value``. See *Options parameters* section at the end of this README for more details.
 
 &emsp; 
 </details>
@@ -183,7 +183,7 @@ python test.py test=<test> [OPTIONS]
 #### Datasets:
 - ``data=webvid-covr``: WebVid-CoVR datasets.
 - ``data=cirr``: CIRR dataset.
-- ``data=fashioniq-split``: FashionIQ dataset, change ``split`` to ``dress``, ``shirt`` or ``toptee``.
+- ``data=fashioniq``: FashionIQ dataset.
 
 #### Tests:
 - ``test=all``: Test on WebVid-CoVR, CIRR and all three Fashion-IQ test sets.
