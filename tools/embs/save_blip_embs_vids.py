@@ -20,9 +20,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def get_blip_config(model="base"):
     config = dict()
     if model == "base":
-        config[
-            "pretrained"
-        ] = "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_base_capfilt_large.pth"
+        config["pretrained"] = (
+            "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_base_capfilt_large.pth"
+        )
         # ] = "/linkhome/rech/genuvt01/ucp99db/.cache/torch/hub/checkpoints/model_base_retrieval_coco.pth"
 
         config["vit"] = "base"
@@ -32,9 +32,9 @@ def get_blip_config(model="base"):
         config["vit_ckpt_layer"] = 4
         config["init_lr"] = 1e-5
     elif model == "large":
-        config[
-            "pretrained"
-        ] = "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_large_retrieval_coco.pth"
+        config["pretrained"] = (
+            "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_large_retrieval_coco.pth"
+        )
         config["vit"] = "large"
         config["batch_size_train"] = 16
         config["batch_size_test"] = 32
