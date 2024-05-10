@@ -148,8 +148,18 @@ bash tools/scripts/download_pretrained_models.sh
 
 Before training, you will need to compute the BLIP embeddings for the videos/images. To do so, run:
 ```bash
-python tools/embs/save_blip_embs_vids.py # This will compute the embeddings for the WebVid-CoVR videos.
-python tools/embs/save_blip_embs_imgs.py # This will compute the embeddings for the CIRR or FashionIQ images.
+# This will compute the embeddings for the WebVid-CoVR videos. 
+# Note that you can use multiple GPUs with --num_shards and --shard_id
+python tools/embs/save_blip_embs_vids.py --video_dir datasets/WebVid/2M/train --todo_ids annotation/webvid-covr/webvid2m-covr_train.csv 
+
+# This will compute the embeddings for the WebVid-CoVR-Test videos.
+python tools/embs/save_blip_embs_vids.py --video_dir datasets/WebVid/8M/train --todo_ids annotation/webvid-covr/webvid8m-covr_test.csv 
+
+# This will compute the embeddings for the CIRR images.
+python tools/embs/save_blip_embs_imgs.py --image_dir datasets/CIRR/images/
+
+# This will compute the embeddings for FashionIQ images.
+python tools/embs/save_blip_embs_imgs.py --image_dir datasets/fashion-iq/images/
 ```
 
 &emsp; 
