@@ -1,11 +1,13 @@
 """
- * Copyright (c) 2022, salesforce.com, inc.
- * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
- * By Junnan Li
+* Copyright (c) 2022, salesforce.com, inc.
+* All rights reserved.
+* SPDX-License-Identifier: BSD-3-Clause
+* For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+* By Junnan Li
 """
+
 import warnings
+from pathlib import Path
 
 warnings.filterwarnings("ignore")
 
@@ -288,6 +290,7 @@ def load_checkpoint(model, url_or_filename):
         )
         checkpoint = torch.load(cached_file, map_location="cpu")
     elif os.path.isfile(url_or_filename):
+        assert Path(url_or_filename).exists(), f"checkpoint {url_or_filename} not found"
         checkpoint = torch.load(url_or_filename, map_location="cpu")
     else:
         raise RuntimeError(f"checkpoint {url_or_filename} is invalid")
