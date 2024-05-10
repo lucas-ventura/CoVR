@@ -23,10 +23,9 @@ class TestCirr:
         fabric.print("Computing features for test...")
         start_time = time.time()
 
-        tar_img_feats = []
         query_feats = []
         pair_ids = []
-        for ref_img, tar_feat, caption, pair_id, *_ in data_loader:
+        for ref_img, caption, pair_id, *_ in data_loader:
             pair_ids.extend(pair_id.cpu().numpy().tolist())
 
             device = ref_img.device
@@ -58,21 +57,15 @@ class TestCirr:
             query_feat = F.normalize(model.text_proj(query_feat), dim=-1)
             query_feats.append(query_feat.cpu())
 
-            # Encode the target image
-            tar_img_feats.append(tar_feat.cpu())
-
         pair_ids = torch.tensor(pair_ids, dtype=torch.long)
         query_feats = torch.cat(query_feats, dim=0)
-        tar_img_feats = torch.cat(tar_img_feats, dim=0)
 
         if fabric.world_size > 1:
             # Gather tensors from every process
             query_feats = fabric.all_gather(query_feats)
-            tar_img_feats = fabric.all_gather(tar_img_feats)
             pair_ids = fabric.all_gather(pair_ids)
 
             query_feats = einops.rearrange(query_feats, "d b e -> (d b) e")
-            tar_img_feats = einops.rearrange(tar_img_feats, "d b e -> (d b) e")
             pair_ids = einops.rearrange(pair_ids, "d b -> (d b)")
 
         if fabric.global_rank == 0:
@@ -83,9 +76,9 @@ class TestCirr:
             assert len(img_ids) == len(pair_ids)
 
             id2emb = OrderedDict()
-            for img_id, tar_img_feat in zip(img_ids, tar_img_feats):
+            for img_id, target_emb_pth in data_loader.dataset.id2embpth.items():
                 if img_id not in id2emb:
-                    id2emb[img_id] = tar_img_feat
+                    id2emb[img_id] = torch.load(target_emb_pth).cpu()
 
             tar_feats = torch.stack(list(id2emb.values()), dim=0)
             sims_q2t = query_feats @ tar_feats.T
@@ -122,9 +115,6 @@ class TestCirr:
                 sorted_indices = np.argsort(query_sims)[::-1]
 
                 query_id_recalls = list(target_imgs[sorted_indices][:50])
-                query_id_recalls = [
-                    str(data_loader.dataset.int2id[x]) for x in query_id_recalls
-                ]
                 recalls[str(pair_id)] = query_id_recalls
 
                 members = data_loader.dataset.pairid2members[pair_id]
@@ -132,9 +122,6 @@ class TestCirr:
                     target
                     for target in target_imgs[sorted_indices]
                     if target in members
-                ]
-                query_id_recalls_subset = [
-                    data_loader.dataset.int2id[x] for x in query_id_recalls_subset
                 ][:3]
                 recalls_subset[str(pair_id)] = query_id_recalls_subset
 

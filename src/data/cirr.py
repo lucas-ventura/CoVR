@@ -143,21 +143,13 @@ class CIRRDataset(Dataset):
         assert self.img_dir.exists(), f"Image directory {img_dir} does not exist"
         assert self.emb_dir.exists(), f"Embedding directory {emb_dir} does not exist"
 
-        self.pairid2ref = {
-            ann["pairid"]: id2int(ann["reference"]) for ann in self.annotation
-        }
-        self.int2id = {
-            id2int(ann["reference"]): ann["reference"] for ann in self.annotation
-        }
-        ids = {ann["reference"] for ann in self.annotation}
-        assert len(self.int2id) == len(ids), "Reference ids are not unique"
-
+        self.pairid2ref = {ann["pairid"]: ann["reference"] for ann in self.annotation}
         self.pairid2members = {
-            ann["pairid"]: id2int(ann["img_set"]["members"]) for ann in self.annotation
+            ann["pairid"]: ann["img_set"]["members"] for ann in self.annotation
         }
         if split != "test":
             self.pairid2tar = {
-                ann["pairid"]: id2int(ann["target_hard"]) for ann in self.annotation
+                ann["pairid"]: ann["target_hard"] for ann in self.annotation
             }
         else:
             self.pairid2tar = None
@@ -199,8 +191,7 @@ class CIRRDataset(Dataset):
         caption = pre_caption(ann["caption"], self.max_words)
 
         if self.split == "test":
-            reference_feat = torch.load(self.id2embpth[ann["reference"]])
-            return reference_img, reference_feat, caption, ann["pairid"]
+            return reference_img, caption, ann["pairid"]
 
         target_emb_pth = self.id2embpth[ann["target_hard"]]
         target_feat = torch.load(target_emb_pth).cpu()
