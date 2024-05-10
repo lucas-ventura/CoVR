@@ -194,6 +194,8 @@ python test.py test=<test> [OPTIONS]
 #### Checkpoints:
 - ``model/ckpt=blip-l-coco``: Default checkpoint for BLIP-L finetuned on COCO.
 - ``model/ckpt=webvid-covr``: Default checkpoint for CoVR finetuned on WebVid-CoVR.
+- ``model/ckpt=fashioniq-all-ft_covr``: Default checkpoint pretrained on WebVid-CoVR and finetuned on FashionIQ.
+- ``model/ckpt=cirr_ft-covr+gt``: Default checkpoint pretrained on WebVid-CoVR and finetuned on CIRR.
 
 #### Training
 - ``trainer=gpu``: training with CUDA, change ``devices`` to the number of GPUs you want to use.
