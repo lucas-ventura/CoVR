@@ -1,0 +1,17 @@
+cirr-val:
+  dataname: cirr-val
+  _target_: src.data.cirr.CIRRTestDataModule
+  split: val
+
+  test:
+    _target_: src.test.cirr_val.TestEvaluate
+
+  batch_size: ${machine.batch_size}
+  num_workers: ${machine.num_workers}
+
+  annotation: ${paths.work_dir}/annotation/cirr/cap.rc2.val.json
+  img_dirs: ${paths.datasets_dir}/CIRR/images/dev
+  emb_dirs: ${paths.datasets_dir}/CIRR/blip-embs-large/dev
+
+  image_size: 384
+

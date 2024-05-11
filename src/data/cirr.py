@@ -7,7 +7,7 @@ from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 
 from src.data.transforms import transform_test, transform_train
-from src.data.utils import id2int, pre_caption
+from src.data.utils import pre_caption
 
 Image.MAX_IMAGE_PIXELS = None  # Disable DecompressionBombWarning
 
@@ -85,6 +85,7 @@ class CIRRTestDataModule(LightningDataModule):
         num_workers: int = 4,
         pin_memory: bool = True,
         image_size: int = 384,
+        split: str = "test",
         **kwargs,  # type: ignore
     ) -> None:
         super().__init__()
@@ -101,7 +102,7 @@ class CIRRTestDataModule(LightningDataModule):
             annotation=annotation,
             img_dir=img_dirs,
             emb_dir=emb_dirs,
-            split="test",
+            split=split,
         )
 
     def test_dataloader(self):
@@ -147,7 +148,7 @@ class CIRRDataset(Dataset):
         self.pairid2members = {
             ann["pairid"]: ann["img_set"]["members"] for ann in self.annotation
         }
-        if split != "test":
+        if "test" not in Path(self.annotation_pth).stem:
             self.pairid2tar = {
                 ann["pairid"]: ann["target_hard"] for ann in self.annotation
             }
@@ -191,7 +192,8 @@ class CIRRDataset(Dataset):
         caption = pre_caption(ann["caption"], self.max_words)
 
         if self.split == "test":
-            return reference_img, caption, ann["pairid"]
+            reference_feat = torch.load(self.id2embpth[ann["reference"]])
+            return reference_img, reference_feat, caption, ann["pairid"]
 
         target_emb_pth = self.id2embpth[ann["target_hard"]]
         target_feat = torch.load(target_emb_pth).cpu()
