@@ -6,8 +6,6 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from src.data.utils import id2int
-
 
 class TestEvaluate:
     def __init__(self):
@@ -71,28 +69,22 @@ def evaluate(model, data_loader, fabric):
     query_feats = F.normalize(query_feats, dim=-1)
     tar_img_feats = F.normalize(tar_img_feats, dim=-1)
 
-    ref_img_ids = [data_loader.dataset.pairid2ref[pair_id] for pair_id in pair_ids]
-    tar_img_ids = [data_loader.dataset.pairid2tar[pair_id] for pair_id in pair_ids]
-
-    ref_img_ids = [id2int(ref_img_id) for ref_img_id in ref_img_ids]
-    tar_img_ids = [id2int(tar_img_id) for tar_img_id in tar_img_ids]
-
-    ref_img_ids = torch.tensor(ref_img_ids, dtype=torch.long)
-    tar_img_ids = torch.tensor(tar_img_ids, dtype=torch.long)
-
     if fabric.world_size > 1:
         # Gather tensors from every process
         query_feats = fabric.all_gather(query_feats)
         tar_img_feats = fabric.all_gather(tar_img_feats)
-        ref_img_ids = fabric.all_gather(ref_img_ids)
-        tar_img_ids = fabric.all_gather(tar_img_ids)
 
         query_feats = einops.rearrange(query_feats, "d b e -> (d b) e")
         tar_img_feats = einops.rearrange(tar_img_feats, "d b e -> (d b) e")
-        ref_img_ids = einops.rearrange(ref_img_ids, "d b -> (d b)")
-        tar_img_ids = einops.rearrange(tar_img_ids, "d b -> (d b)")
 
     if fabric.global_rank == 0:
+        ref_img_ids = np.array(
+            [data_loader.dataset.pairid2ref[pair_id] for pair_id in pair_ids]
+        )
+        tar_img_ids = np.array(
+            [data_loader.dataset.pairid2tar[pair_id] for pair_id in pair_ids]
+        )
+
         sim_q2t = (query_feats @ tar_img_feats.t()).cpu().numpy()
 
         # Add zeros where ref_img_id == tar_img_id
@@ -107,6 +99,36 @@ def evaluate(model, data_loader, fabric):
 
         eval_result = eval_recall(sim_q2t)
         fabric.print(eval_result)
+
+        # Compute Recall_subset@K
+        # Code adapted from https://github.com/Cuberick-Orion/CIRPLANT/blob/cd5798dbeb1902aa9b95c323c2f90eb90a757918/model/OSCAR/OSCAR_CIRPLANT.py#L318
+        recalls_subset = {}
+        assert len(sim_q2t) == len(pair_ids)
+        for pair_id, query_sims in zip(pair_ids, sim_q2t):
+            sorted_indices = np.argsort(query_sims)[::-1]
+
+            members = data_loader.dataset.pairid2members[pair_id]
+            query_id_recalls_subset = [
+                target for target in tar_img_ids[sorted_indices] if target in members
+            ][:3]
+            assert (
+                len(query_id_recalls_subset) > 0
+            ), f"pair_id: {pair_id} has no recalls"
+            recalls_subset[str(pair_id)] = query_id_recalls_subset
+
+        all_target_captions_soft = {
+            ann["pairid"]: ann["target_soft"] for ann in data_loader.dataset.annotation
+        }
+        for k in [1, 2, 3]:
+            r = 0
+            for pair_id, query_id_recalls_subset in recalls_subset.items():
+                highest_r = 0.0
+                for ii, ss in all_target_captions_soft[int(pair_id)].items():
+                    if ii in query_id_recalls_subset[:k]:
+                        highest_r = max(highest_r, ss)
+                r += highest_r
+            r /= len(recalls_subset)
+            fabric.print(f"Recall_subset@{k}: {r*100:.2f}")
 
     fabric.barrier()
 
