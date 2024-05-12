@@ -4,7 +4,7 @@ cirr-val:
   split: val
 
   test:
-    _target_: src.test.cirr_val.TestEvaluate
+    _target_: src.test.cirr_val.ValCirr
 
   batch_size: ${machine.batch_size}
   num_workers: ${machine.num_workers}

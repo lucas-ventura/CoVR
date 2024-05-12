@@ -78,7 +78,8 @@ class TestCirr:
             id2emb = OrderedDict()
             for img_id, target_emb_pth in data_loader.dataset.id2embpth.items():
                 if img_id not in id2emb:
-                    id2emb[img_id] = torch.load(target_emb_pth).cpu()
+                    tar_emb = F.normalize(torch.load(target_emb_pth).cpu(), dim=-1)
+                    id2emb[img_id] = tar_emb
 
             tar_feats = torch.stack(list(id2emb.values()), dim=0)
             sims_q2t = query_feats @ tar_feats.T
