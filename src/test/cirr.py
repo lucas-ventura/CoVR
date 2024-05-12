@@ -25,7 +25,7 @@ class TestCirr:
 
         query_feats = []
         pair_ids = []
-        for ref_img, _, caption, pair_id, *_ in data_loader:
+        for ref_img, caption, pair_id, *_ in data_loader:
             pair_ids.extend(pair_id.cpu().numpy().tolist())
 
             device = ref_img.device
