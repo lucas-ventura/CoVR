@@ -78,7 +78,8 @@ class ValCirr:
                     tar_emb = F.normalize(torch.load(target_emb_pth).cpu(), dim=-1)
                     id2emb[img_id] = tar_emb
 
-            tar_feats = torch.stack(list(id2emb.values()), dim=0)
+            tar_feats = torch.stack(list(id2emb.values()), dim=0).to("cpu")
+            query_feats = query_feats.to("cpu")
             sims_q2t = query_feats @ tar_feats.T
 
             # Create a mapping from pair_id to row index for faster lookup
