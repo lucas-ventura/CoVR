@@ -82,6 +82,11 @@ class ValCirr:
             query_feats = query_feats.to("cpu")
             sims_q2t = query_feats @ tar_feats.T
 
+            assert sims_q2t.shape == (
+                4181,
+                8102,
+            ), f"Expected {(4181, 8102)}, got {sims_q2t.shape}"
+
             # Create a mapping from pair_id to row index for faster lookup
             pairid2index = {pair_id: i for i, pair_id in enumerate(pair_ids)}
 
