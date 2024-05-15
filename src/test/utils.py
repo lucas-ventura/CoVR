@@ -59,26 +59,19 @@ def evaluate(model, data_loader, fabric):
     query_feats = F.normalize(query_feats, dim=-1)
     tar_img_feats = F.normalize(tar_img_feats, dim=-1)
 
-    ref_img_ids = [data_loader.dataset.pairid2ref[pair_id] for pair_id in pair_ids]
-    tar_img_ids = [data_loader.dataset.pairid2tar[pair_id] for pair_id in pair_ids]
-
-    ref_img_ids = torch.tensor(ref_img_ids, dtype=torch.long)
-    tar_img_ids = torch.tensor(tar_img_ids, dtype=torch.long)
-
     if fabric.world_size > 1:
         # Gather tensors from every process
         query_feats = fabric.all_gather(query_feats)
         tar_img_feats = fabric.all_gather(tar_img_feats)
-        ref_img_ids = fabric.all_gather(ref_img_ids)
-        tar_img_ids = fabric.all_gather(tar_img_ids)
 
         query_feats = einops.rearrange(query_feats, "d b e -> (d b) e")
         tar_img_feats = einops.rearrange(tar_img_feats, "d b e -> (d b) e")
-        ref_img_ids = einops.rearrange(ref_img_ids, "d b -> (d b)")
-        tar_img_ids = einops.rearrange(tar_img_ids, "d b -> (d b)")
 
     if fabric.global_rank == 0:
         sim_q2t = (query_feats @ tar_img_feats.t()).cpu().numpy()
+
+        ref_img_ids = [data_loader.dataset.pairid2ref[pair_id] for pair_id in pair_ids]
+        tar_img_ids = [data_loader.dataset.pairid2tar[pair_id] for pair_id in pair_ids]
 
         # Add zeros where ref_img_id == tar_img_id
         for i in range(len(ref_img_ids)):
