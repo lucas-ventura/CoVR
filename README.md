@@ -94,9 +94,9 @@ To download the annotations, run:
 bash tools/scripts/download_annotation.sh covr
 ```
 
-To download the videos, install [`mpi4py`](https://mpi4py.readthedocs.io/en/latest/install.html#) and run:
+To download the videos, install [`mpi4py`](https://mpi4py.readthedocs.io/en/latest/install.html#) (``conda install -c conda-forge mpi4py``) and run:
 ```bash
-python tools/scripts/download_covr.py <split>
+python tools/scripts/download_covr.py --split=<train, val or test>
 ```
 
 ### CIRR
