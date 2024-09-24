@@ -19,7 +19,8 @@ defaults:
   - trainer: gpu
   - model: blip-large
   - model/ckpt: blip-l-coco
-  - model/loss: hn_nce
+  - model/loss: hn_nce # not used
+  - model/loss_terms: si_ti # not used
   - trainer/logger: none
 
   - experiment: null

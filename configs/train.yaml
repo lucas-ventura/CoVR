@@ -24,10 +24,14 @@ defaults:
   - model/scheduler: cosine
   - model/loss: hn_nce
   - model/ckpt: blip-l-coco
+  - model/loss_terms: si_ti
 
   - experiment: null
+  - experiment2: null
 
 paths: ${machine.paths}
 
 # Flag to validate at the end of every epoch
 val: True
+evaluate:
+  _target_: src.test.${model.basemodel}.utils.evaluate

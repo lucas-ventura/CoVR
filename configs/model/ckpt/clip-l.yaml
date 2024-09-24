@@ -1,0 +1,5 @@
+name: clip-l
+
+path: "ViT-L/14"
+
+image_size: 224

@@ -1,0 +1,18 @@
+# @package _global_
+
+defaults:
+  - override /data: fashioniq.yaml
+  - override /test: fashioniq.yaml
+  - override /model: blip2-coco.yaml
+  - override /model/ckpt: blip2-l-coco.yaml
+  - override /model/loss_terms: si_ti
+
+model:
+  optimizer:
+    lr: 1e-4
+
+trainer:
+  max_epochs: 6
+
+val: False
+run_name: base

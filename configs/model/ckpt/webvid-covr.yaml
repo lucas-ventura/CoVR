@@ -1,3 +1,5 @@
 name: webvid-covr
 
 path: ${paths.work_dir}/outputs/webvid-covr/blip-large/blip-l-coco/tv-False_loss-hnnce_lr-1e-05/good/ckpt_4.ckpt
+
+image_size: 384

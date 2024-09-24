@@ -20,9 +20,9 @@ img_dirs:
   val: ${data.dataset_dir}/images/
 
 emb_dirs:
-  train: ${data.dataset_dir}/blip-embs-large/
-  val: ${data.dataset_dir}/blip-embs-large/
+  train: ${data.dataset_dir}/${model.basemodel}-embs-large/
+  val: ${data.dataset_dir}/${model.basemodel}-embs-large/
 
-image_size: 384
+image_size: ${model.ckpt.image_size}
 
 category: ???

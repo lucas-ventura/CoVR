@@ -1,12 +1,13 @@
 modelname: blip-large-visual
-_target_: src.model.blip_cir_visual.blip_cir_visual
+basemodel: blip
+_target_: src.model.blip.blip_cir_visual.blip_cir_visual
 
 ckpt_path: ${model.ckpt.path}
 
 model:
-  _target_: src.model.blip_cir_visual.BLIPCirVisualOnly
+  _target_: src.model.blip.blip_cir_visual.BLIPCirVisualOnly
   med_config: ${paths.work_dir}/configs/med_config.json
-  image_size: ${data.image_size}
+  image_size: ${model.ckpt.image_size}
   vit: "large"
   vit_grad_ckpt: True
   vit_ckpt_layer: 12

@@ -4,14 +4,14 @@ cirr-val:
   split: val
 
   test:
-    _target_: src.test.cirr_val.ValCirr
+    _target_: src.test.${model.basemodel}.cirr_val.ValCirr
 
   batch_size: ${machine.batch_size}
   num_workers: ${machine.num_workers}
 
   annotation: ${paths.work_dir}/annotation/cirr/cap.rc2.val.json
   img_dirs: ${paths.datasets_dir}/CIRR/images/dev
-  emb_dirs: ${paths.datasets_dir}/CIRR/blip-embs-large/dev
+  emb_dirs: ${paths.datasets_dir}/CIRR/${model.basemodel}-embs-large/dev
 
-  image_size: 384
+  image_size: ${model.ckpt.image_size}
 

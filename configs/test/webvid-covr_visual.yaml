@@ -2,7 +2,7 @@ webvid_covr_visual:
   dataname: webvid-covr_visual
   _target_: src.data.webvid_covr.WebVidCoVRTestDataModule
 
-  image_size: 384
+  image_size: ${model.ckpt.image_size}
 
   vid_query_method: middle
   vid_frames: 1
@@ -14,7 +14,7 @@ webvid_covr_visual:
   # Paths
   annotation: ${paths.work_dir}/annotation/webvid-covr/webvid8m-covr_test.csv
   vid_dirs: ${paths.datasets_dir}/WebVid/8M/train
-  emb_dirs: ${paths.datasets_dir}/WebVid/8M/blip-vid-embs-${model.model.vit}-all
+  emb_dirs: ${paths.datasets_dir}/WebVid/8M/${model.basemodel}-vid-embs-${model.model.vit}-all
 
   test:
-    _target_: src.test.webvid_covr_exp.TestWebVidCoVRVisualOnly
+    _target_: src.test.${model.basemodel}.webvid_covr_exp.TestWebVidCoVRVisualOnly

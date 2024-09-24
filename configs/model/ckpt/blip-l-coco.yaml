@@ -1,3 +1,5 @@
 name: blip-l-coco
 
 path: "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_large_retrieval_coco.pth"
+
+image_size: 384

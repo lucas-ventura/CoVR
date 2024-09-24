@@ -1,0 +1,16 @@
+circo-val:
+  dataname: circo-val
+  _target_: src.data.circo.CIRCOTestDataModule
+
+  batch_size: ${machine.batch_size}
+  num_workers: ${machine.num_workers}
+
+  data_path: ${paths.datasets_dir}/CIRCO/
+  emb_dir: ${paths.datasets_dir}/CIRCO/${model.basemodel}-embs-large/
+  split: "val"
+
+  image_size: ${model.ckpt.image_size}
+
+  test:
+    _target_: src.test.${model.basemodel}.circo.TestCirco
+    split: ${test.circo-val.split}

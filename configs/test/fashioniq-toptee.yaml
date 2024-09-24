@@ -9,10 +9,10 @@ fashioniq-toptee:
   targets: ${paths.work_dir}/annotation/fashion-iq/split.toptee.val.json
 
   img_dirs: ${paths.datasets_dir}/fashion-iq/images/
-  emb_dirs: ${paths.datasets_dir}/fashion-iq/blip-embs-large/
+  emb_dirs: ${paths.datasets_dir}/fashion-iq/${model.basemodel}-embs-large/
 
-  image_size: 384
+  image_size: ${model.ckpt.image_size}
 
   test:
-    _target_: src.test.fashioniq.TestFashionIQ
+    _target_: src.test.${model.basemodel}.fashioniq.TestFashionIQ
     category: toptee

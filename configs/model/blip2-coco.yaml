@@ -1,0 +1,22 @@
+modelname: blip2-coco
+basemodel: blip2
+_target_: src.model.blip2.blip2_cir.blip2_cir
+
+ckpt_path: ${model.ckpt.path}
+
+model:
+  _target_: src.model.blip2.blip2_cir.BLIP2Cir
+  vit_model: "eva_clip_g"
+  image_size: ${model.ckpt.image_size}
+  drop_path_rate: 0
+  use_grad_checkpoint: True
+  vit_precision: "fp32"
+  train_vit: False
+  num_query_token: 32
+  temperature: 0.07
+  vit: "large"
+
+  loss: ${model.loss}
+
+  si_ti_weight: ${model.loss_terms.si_ti_weight}
+  si_tc_weight: ${model.loss_terms.si_tc_weight}

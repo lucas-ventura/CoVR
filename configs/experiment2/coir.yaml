@@ -1,0 +1,21 @@
+# @package _global_
+
+defaults:
+  - override /data: cc-coir.yaml
+  - override /test: all.yaml
+  - override /model: blip2-coco.yaml
+  - override /model/ckpt: blip2-l-coco.yaml
+  - override /model/loss_terms: si_ti+si_tc
+
+model:
+  optimizer:
+    lr: 2e-05
+
+trainer:
+  max_epochs: 3
+
+val: False
+run_name: base
+
+data:
+  batch_size: 256

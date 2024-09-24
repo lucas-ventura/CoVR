@@ -1,4 +1,4 @@
-_target_: src.model.loss.HardNegativeNCE
+_target_: src.model.blip.loss.HardNegativeNCE
 name: hnnce
 
 alpha: 1

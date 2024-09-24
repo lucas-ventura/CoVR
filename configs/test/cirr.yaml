@@ -3,13 +3,13 @@ cirr:
   _target_: src.data.cirr.CIRRTestDataModule
 
   test:
-    _target_: src.test.cirr.TestCirr
+    _target_: src.test.${model.basemodel}.cirr.TestCirr
 
   batch_size: ${machine.batch_size}
   num_workers: ${machine.num_workers}
 
   annotation: ${paths.work_dir}/annotation/cirr/cap.rc2.test1.json
   img_dirs: ${paths.datasets_dir}/CIRR/images/test1
-  emb_dirs: ${paths.datasets_dir}/CIRR/blip-embs-large/test1
+  emb_dirs: ${paths.datasets_dir}/CIRR/${model.basemodel}-embs-large/test1
 
-  image_size: 384
+  image_size: ${model.ckpt.image_size}

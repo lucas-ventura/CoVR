@@ -1,0 +1,5 @@
+name: blip2-l-coco
+
+path: "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_finetune_coco.pth"
+
+image_size: 364

@@ -1,0 +1,5 @@
+name: blip2-l-coco_coir+covr
+
+path: ${paths.work_dir}/outputs/cc-coir+webvid-covr/blip2-coco/blip2-l-coco/tv-False_loss-hnnce_lr-1e-05/base/ckpt_0.ckpt
+
+image_size: 364

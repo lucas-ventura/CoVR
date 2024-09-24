@@ -1,2 +1,2 @@
-_target_: src.model.loss.CrossEntropyLoss
+_target_: src.model.blip.loss.CrossEntropyLoss
 name: ce

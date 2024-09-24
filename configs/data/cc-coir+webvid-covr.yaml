@@ -1,0 +1,10 @@
+dataname: cc-coir+webvid-covr
+_target_: src.data.merged.MergedDataModule
+
+image_size: ${model.ckpt.image_size}
+batch_size: ${machine.batch_size}
+num_workers: ${machine.num_workers}
+
+defaults:
+  - /data@dataset-1: cc-coir.yaml
+  - /data@dataset-2: webvid-covr.yaml

@@ -1,14 +1,12 @@
 dataname: webvid-covr-rule-based
 _target_: src.data.webvid_covr_rulebased.WebVidCoVRDataModuleRuleBased
 
-image_size: 384
+image_size: ${model.ckpt.image_size}
 iterate: "pth2"
 vid_query_method: middle
 vid_frames: 1
 emb_pool: query
-
-# Paths
-dataset_dir: ${paths.datasets_dir}/WebVid
+si_tc_weight: ${model.loss_terms.si_tc_weight}
 
 batch_size: ${machine.batch_size}
 num_workers: ${machine.num_workers}
@@ -18,9 +16,9 @@ annotation:
   val: ${paths.work_dir}/annotation/webvid-covr/webvid8m-covr_val.csv
 
 vid_dirs:
-  train: ${data.dataset_dir}/2M/train
-  val: ${data.dataset_dir}/8M/train
+  train: ${paths.datasets_dir}/WebVid/2M/train
+  val: ${paths.datasets_dir}/WebVid/8M/train
 
 emb_dirs:
-  train: ${data.dataset_dir}/2M/blip-vid-embs-${model.model.vit}-all
-  val: ${data.dataset_dir}/8M/blip-vid-embs-${model.model.vit}-all
+  train: ${paths.datasets_dir}/WebVid/2M/${model.basemodel}-vid-embs-${model.model.vit}-all
+  val: ${paths.datasets_dir}/WebVid/8M/${model.basemodel}-vid-embs-${model.model.vit}-all
