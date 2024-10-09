@@ -1,3 +1,5 @@
+import torch
+from einops import rearrange
 from lightning_utilities.core.rank_zero import rank_zero_only
 
 
@@ -33,3 +35,18 @@ def print_dist(message):
             print(message)
     else:
         print(message)
+
+
+@torch.no_grad()
+def concat_all_gather(tensor, fabric):
+    if fabric.world_size > 1:
+        tensor = fabric.all_gather(tensor, sync_grads=False)
+        tensor = rearrange(tensor, "batch num_gpu ... -> (batch num_gpu) ...")
+    return tensor
+
+
+def all_gather_with_grad(tensors, fabric):
+    if fabric.world_size > 1:
+        tensors = fabric.all_gather(tensors, sync_grads=True)
+        tensors = rearrange(tensors, "batch num_gpu ... -> (batch num_gpu) ...")
+    return tensors

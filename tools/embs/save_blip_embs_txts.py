@@ -2,19 +2,42 @@ import os
 import sys
 from pathlib import Path
 
+import pandas as pd
 import torch
 import torch.nn.functional as F
+from torch.utils.data import Dataset
 from tqdm.auto import tqdm
 
-script_path = os.path.abspath(__file__)
-script_dir = os.path.dirname(script_path)
-project_root = os.path.abspath(os.path.join(script_dir, "..", ".."))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, "..", ".."))
 sys.path.append(project_root)
 
-from src.data.embs import ImageDataset
-from src.model.blip.blip_embs import blip_embs
+from src.data.utils import pre_caption
+from src.model.blip.blip_cir import BLIPCir, blip_cir
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+class TextDataset(Dataset):
+    def __init__(
+        self,
+        csv_path,
+        column="txt2",
+        max_words=30,
+    ):
+        self.df = pd.read_csv(csv_path)
+        self.texts = list(set(self.df[column].unique().tolist()))
+        self.texts.sort()
+        self.max_words = max_words
+
+    def __len__(self):
+        return len(self.texts)
+
+    def __getitem__(self, index):
+        txt = self.texts[index]
+        txt = pre_caption(txt, self.max_words)
+
+        return txt
 
 
 def get_blip_config(model="base"):
@@ -51,10 +74,7 @@ def get_blip_config(model="base"):
 
 @torch.no_grad()
 def main(args):
-    dataset = ImageDataset(
-        image_dir=args.image_dir,
-        save_dir=args.save_dir,
-    )
+    dataset = TextDataset(args.data_csv, column=args.column)
 
     loader = torch.utils.data.DataLoader(
         dataset,
@@ -66,53 +86,61 @@ def main(args):
 
     print("Creating model")
     config = get_blip_config(args.model_type)
-    model = blip_embs(
-        pretrained=config["pretrained"],
+    model = BLIPCir(
+        loss=":)",
+        med_config="configs/med_config.json",
         image_size=config["image_size"],
         vit=config["vit"],
         vit_grad_ckpt=config["vit_grad_ckpt"],
         vit_ckpt_layer=config["vit_ckpt_layer"],
-        queue_size=config["queue_size"],
-        negative_all_rank=config["negative_all_rank"],
     )
+    model = blip_cir(model, config["pretrained"])
 
     model = model.to(device)
     model.eval()
 
-    for imgs, video_ids in tqdm(loader):
-        imgs = imgs.to(device)
-        img_embs = model.visual_encoder(imgs)
-        img_feats = F.normalize(model.vision_proj(img_embs[:, 0, :]), dim=-1).cpu()
+    text_feats = []
+    for txts in tqdm(loader):
+        txts = model.tokenizer(
+            txts,
+            padding="max_length",
+            truncation=True,
+            max_length=30,
+            return_tensors="pt",
+        ).to(device)
+        text_output = model.text_encoder(
+            txts.input_ids,
+            attention_mask=txts.attention_mask,
+            return_dict=True,
+            mode="text",
+        )
+        text_feat = F.normalize(
+            model.text_proj(text_output.last_hidden_state[:, 0, :]), dim=-1
+        ).cpu()
+        text_feats.append(text_feat)
 
-        for img_feat, video_id in zip(img_feats, video_ids):
-            torch.save(img_feat, args.save_dir / f"{video_id}.pth")
+    text_feats = torch.cat(text_feats, dim=0)
+    save_obj = {
+        "texts": dataset.texts,
+        "feats": text_feats,
+    }
+    torch.save(save_obj, args.save_dir / f"{args.column}_{args.data_csv.stem}.pth")
 
 
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--image_dir", type=Path, required=True, help="Path to image directory"
-    )
-    parser.add_argument("--save_dir", type=Path)
+    parser.add_argument("data_csv", type=Path)
+    parser.add_argument("save_dir", type=Path)
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--num_workers", type=int, default=8)
     parser.add_argument(
         "--model_type", type=str, default="large", choices=["base", "large"]
     )
+    parser.add_argument("--column", type=str, default="txt2")
     args = parser.parse_args()
 
-    subdirectories = [subdir for subdir in args.image_dir.iterdir() if subdir.is_dir()]
-    if len(subdirectories) == 0:
-        args.save_dir = args.image_dir.parent / f"blip-embs-{args.model_type}"
-        args.save_dir.mkdir(exist_ok=True)
-        main(args)
-    else:
-        for subdir in subdirectories:
-            args.image_dir = subdir
-            args.save_dir = (
-                subdir.parent.parent / f"blip-embs-{args.model_type}" / subdir.name
-            )
-            args.save_dir.mkdir(exist_ok=True, parents=True)
-            main(args)
+    args.save_dir.mkdir(exist_ok=True)
+
+    main(args)

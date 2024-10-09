@@ -1,19 +1,22 @@
 import datetime
 import shutil
 import time
+from pathlib import Path
 
 import hydra
 import lightning as L
 from hydra.utils import instantiate
 from omegaconf import DictConfig, OmegaConf
 
-from src.test.utils import evaluate
 from src.tools.files import json_dump
 from src.tools.utils import calculate_model_params
 
 
 @hydra.main(version_base=None, config_path="configs", config_name="train")
 def main(cfg: DictConfig):
+    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print(Path.cwd())
+
     L.seed_everything(cfg.seed, workers=True)
     fabric = instantiate(cfg.trainer.fabric)
     fabric.launch()
@@ -22,7 +25,7 @@ def main(cfg: DictConfig):
     if fabric.global_rank == 0:
         json_dump(OmegaConf.to_container(cfg, resolve=True), "hydra.json")
 
-    data = instantiate(cfg.data)
+    data = instantiate(cfg.data, _recursive_=False)
     loader_train = fabric.setup_dataloaders(data.train_dataloader())
     if cfg.val:
         loader_val = fabric.setup_dataloaders(data.val_dataloader())
@@ -50,7 +53,7 @@ def main(cfg: DictConfig):
 
         if cfg.val:
             fabric.print("Evaluate")
-            evaluate(model, loader_val, fabric=fabric)
+            instantiate(cfg.evaluate, model, loader_val, fabric=fabric)
 
         state = {
             "epoch": epoch,

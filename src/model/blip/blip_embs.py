@@ -1,8 +1,8 @@
 import torch
 from torch import nn
 
-from src.model.blip import create_vit, init_tokenizer, load_checkpoint
-from src.model.med import BertConfig, BertModel
+from src.model.blip.blip import create_vit, init_tokenizer, load_checkpoint
+from src.model.blip.med import BertConfig, BertModel
 
 
 class BLIPEmbs(nn.Module):

@@ -1,17 +1,14 @@
 import datetime
 import time
 from collections import OrderedDict
-from pathlib import Path
 
 import einops
 import numpy as np
 import torch
 import torch.nn.functional as F
 
-from src.tools.files import json_dump
 
-
-class TestCirr:
+class ValCirr:
     def __init__(self):
         pass
 
@@ -20,12 +17,16 @@ class TestCirr:
     def __call__(model, data_loader, fabric):
         model.eval()
 
-        fabric.print("Computing features for test...")
+        fabric.print("Computing features for validation...")
         start_time = time.time()
 
         query_feats = []
         pair_ids = []
-        for ref_img, caption, pair_id, *_ in data_loader:
+        for batch in data_loader:
+            ref_img = batch["ref_img"]
+            caption = batch["edit"]
+            pair_id = batch["pair_id"]
+
             pair_ids.extend(pair_id.cpu().numpy().tolist())
 
             device = ref_img.device
@@ -78,12 +79,19 @@ class TestCirr:
             id2emb = OrderedDict()
             for img_id, target_emb_pth in data_loader.dataset.id2embpth.items():
                 if img_id not in id2emb:
-                    tar_emb = F.normalize(torch.load(target_emb_pth).cpu(), dim=-1)
+                    tar_emb = F.normalize(
+                        torch.load(target_emb_pth, weights_only=True).cpu(), dim=-1
+                    )
                     id2emb[img_id] = tar_emb
 
             tar_feats = torch.stack(list(id2emb.values()), dim=0).to("cpu")
             query_feats = query_feats.to("cpu")
             sims_q2t = query_feats @ tar_feats.T
+
+            assert sims_q2t.shape == (
+                4181,
+                8102,
+            ), f"Expected (4181, 8102), got {sims_q2t.shape}"
 
             # Create a mapping from pair_id to row index for faster lookup
             pairid2index = {pair_id: i for i, pair_id in enumerate(pair_ids)}
@@ -103,13 +111,7 @@ class TestCirr:
             print("Evaluation time {}".format(total_time_str))
 
             recalls = {}
-            recalls["version"] = "rc2"
-            recalls["metric"] = "recall"
-
             recalls_subset = {}
-            recalls_subset["version"] = "rc2"
-            recalls_subset["metric"] = "recall_subset"
-
             target_imgs = np.array(list(id2emb.keys()))
 
             assert len(sims_q2t) == len(pair_ids)
@@ -127,9 +129,32 @@ class TestCirr:
                 ][:3]
                 recalls_subset[str(pair_id)] = query_id_recalls_subset
 
-            json_dump(recalls, "recalls_cirr.json")
-            json_dump(recalls_subset, "recalls_cirr_subset.json")
+            # Compute Recall@K
+            paird2target = {
+                ann["pairid"]: ann["target_hard"]
+                for ann in data_loader.dataset.annotation
+            }
+            for k in [1, 5, 10, 50]:
+                r = 0
+                for pair_id, query_id_recalls in recalls.items():
+                    r += paird2target[int(pair_id)] in query_id_recalls[:k]
+                r /= len(recalls)
+                fabric.print(f"Recall@{k}: {r*100:.2f}")
 
-            print(f"Recalls saved in {Path.cwd()} as recalls_cirr.json")
+            # Compute Recall_subset@K
+            paird2target_soft = {
+                ann["pairid"]: ann["target_soft"]
+                for ann in data_loader.dataset.annotation
+            }
+            for k in [1, 2, 3]:
+                r = 0
+                for pair_id, query_id_recalls_subset in recalls_subset.items():
+                    highest_r = 0.0
+                    for ii, ss in paird2target_soft[int(pair_id)].items():
+                        if ii in query_id_recalls_subset[:k]:
+                            highest_r = max(highest_r, ss)
+                    r += highest_r
+                r /= len(recalls_subset)
+                fabric.print(f"Recall_subset@{k}: {r*100:.2f}")
 
         fabric.barrier()

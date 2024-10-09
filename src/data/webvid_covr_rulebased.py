@@ -30,6 +30,7 @@ class WebVidCoVRDataModuleRuleBased(LightningDataModule):
         iterate: str = "pth2",
         vid_query_method: str = "middle",
         vid_frames: int = 1,
+        si_tc_weight=0,
         **kwargs,  # type: ignore
     ) -> None:
         super().__init__()
@@ -58,6 +59,7 @@ class WebVidCoVRDataModuleRuleBased(LightningDataModule):
             iterate=self.iterate,
             vid_query_method=self.vid_query_method,
             vid_frames=self.vid_frames,
+            si_tc_weight=si_tc_weight,
         )
         self.data_val = WebVidCoVRDatasetRuleBased(
             transform=self.transform_test,
@@ -110,13 +112,17 @@ class WebVidCoVRDatasetRuleBased(Dataset):
         iterate: str = "pth2",
         vid_query_method: str = "middle",
         vid_frames: int = 1,
+        n_embs: int = 15,
+        si_tc_weight=0,
     ) -> None:
         super().__init__()
 
         self.transform = transform
 
-        self.annotation_pth = annotation
-        assert Path(annotation).exists(), f"Annotation file {annotation} does not exist"
+        self.annotation_pth = Path(annotation)
+        assert (
+            self.annotation_pth.exists()
+        ), f"Annotation file {annotation} does not exist"
         self.df = pd.read_csv(annotation)
 
         self.vid_dir = Path(vid_dir)
@@ -180,13 +186,16 @@ class WebVidCoVRDatasetRuleBased(Dataset):
             "query",
         ], f"Invalid emb_pool: {emb_pool}, must be one of middle, mean, or query"
         self.emb_pool = emb_pool
+        self.n_embs = n_embs
 
         if iterate in ["idx", "triplets"]:
             iterate = "idx"
             self.df["idx"] = self.df.index
         self.iterate = iterate
         self.target_txts = self.df[iterate].unique()
-        assert iterate in self.df.columns, f"{iterate} not in {Path(annotation).stem}"
+        assert (
+            iterate in self.df.columns
+        ), f"{iterate} not in {self.annotation_pth.stem}"
         self.df.sort_values(iterate, inplace=True)
         self.df.reset_index(drop=True, inplace=True)
         self.df["int1"] = self.df["pth1"].apply(lambda x: id2int(x, sub="0"))
@@ -212,14 +221,43 @@ class WebVidCoVRDatasetRuleBased(Dataset):
                 len(self.target_txts) == self.df.shape[0]
             ), "Test split should have one caption per row"
 
-        assert vid_query_method in [
-            "middle",
-            "random",
-            "sample",
-        ], f"Invalid vid_query_method: {vid_query_method}, must be one of middle, random, or sample"
+        assert (
+            vid_query_method
+            in [
+                "middle",
+                "random",
+                "sample",
+            ]
+        ), f"Invalid vid_query_method: {vid_query_method}, must be one of middle, random, or sample"
         self.frame_loader = FrameLoader(
             transform=self.transform, method=vid_query_method, frames_video=vid_frames
         )
+
+        # Load text embeddings if si_tc_weight > 0
+        self.txt2emb = None
+        if si_tc_weight > 0:
+            txt2emb_pth = self.emb_dir / f"txt2_{self.annotation_pth.stem}.pth"
+            if "blip2" in str(txt2emb_pth):
+                model = "blip2"
+            elif "blip" in str(txt2emb_pth):
+                model = "blip"
+            elif "clip" in str(txt2emb_pth):
+                model = "clip"
+            else:
+                raise ValueError(f"Invalid model: {txt2emb_pth}")
+            assert txt2emb_pth.exists(), f"txt2emb does not exist: {txt2emb_pth}. Please compute them with: python tools/embs/save_{model}_embs_txts.py {self.annotation_pth} {self.emb_dir}"
+            self.txt2emb = torch.load(txt2emb_pth, weights_only=True)
+            assert len(self.txt2emb["texts"]) == len(
+                self.txt2emb["feats"]
+            ), "txt2emb is not valid"
+            self.txt2emb = {
+                txt: feat
+                for txt, feat in zip(self.txt2emb["texts"], self.txt2emb["feats"])
+            }
+            txt2s = set(self.df["txt2"].unique().tolist())
+            assert txt2s.issubset(
+                set(self.txt2emb.keys())
+            ), "txt2emb does not contain all txt2's"
 
     def __len__(self) -> int:
         return len(self.target_txts)
@@ -237,21 +275,54 @@ class WebVidCoVRDatasetRuleBased(Dataset):
         caption = self.generate_rule_based_edit(ann["diff_txt1"], ann["diff_txt1"])
         caption = pre_caption(caption, self.max_words)
 
-        target_pth = str(ann["path2"])
-        target_emb = torch.load(target_pth).cpu()
-        if self.emb_pool == "middle":
-            target_emb = target_emb[len(target_emb) // 2]
-        elif self.emb_pool == "mean":
-            target_emb = target_emb.mean(0)
-        elif self.emb_pool == "query":
-            vid_scores = ast.literal_eval(str(ann["scores"]))
-            if len(vid_scores) == 0:
-                vid_scores = [1.0] * len(target_emb)
-            vid_scores = torch.Tensor(vid_scores)
-            vid_scores = (vid_scores / 0.1).softmax(dim=0)
-            target_emb = torch.einsum("f,fe->e", vid_scores, target_emb)
+        return_dict = {
+            "ref_img": reference_vid,
+            "edit": caption,
+            "pair_id": index,
+            "tar_txt": ann["txt2"],
+        }
 
-        return reference_vid, target_emb, caption, index
+        if self.txt2emb is not None:
+            return_dict["tar_txt_feat"] = self.txt2emb[ann["txt2"]]
+
+        # Get target embeddings
+        target_pth = str(ann["path2"])
+        target_emb = torch.load(target_pth, weights_only=True).cpu()
+        if self.emb_pool == "middle":
+            return_dict["tar_img_feat"] = target_emb[len(target_emb) // 2]
+            return return_dict
+
+        n_target_emb = min(self.n_embs, len(target_emb))
+        sampled_indices = random.sample(range(len(target_emb)), n_target_emb)
+        sampled_target_emb = target_emb[sampled_indices]
+
+        if self.emb_pool == "mean":
+            return_dict["tar_img_feat"] = sampled_target_emb.mean(0)
+            return return_dict
+
+        assert self.emb_pool == "query", f"Invalid emb_pool: {self.emb_pool}"
+
+        vid_scores = ast.literal_eval(str(ann["scores"]))
+        if len(vid_scores) == 0 or len(target_emb) != len(vid_scores):
+            vid_scores = [1.0] * n_target_emb
+        else:
+            vid_scores = [vid_scores[i] for i in sampled_indices]
+        vid_scores = torch.Tensor(vid_scores)
+        vid_scores = (vid_scores / 0.1).softmax(dim=0)
+        if len(target_emb.shape) == 2:
+            return_dict["tar_img_feat"] = torch.einsum(
+                "f,fe->e", vid_scores, sampled_target_emb
+            )
+        elif len(target_emb.shape) == 3:
+            return_dict["tar_img_feat"] = torch.einsum(
+                "f,fqc->qc", vid_scores, sampled_target_emb
+            )
+        else:
+            raise ValueError(
+                f"target_emb must be 2 or 3 dimensional, got {len(target_emb.shape)}"
+            )
+
+        return return_dict
 
     @staticmethod
     def generate_rule_based_edit(txt1, txt2):

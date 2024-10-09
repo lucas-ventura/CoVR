@@ -1,10 +1,23 @@
 import datetime
 import time
+from pathlib import Path
 
 import einops
 import numpy as np
 import torch
 import torch.nn.functional as F
+
+from src.tools.files import json_dump
+
+
+class TestEvaluate:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    @torch.no_grad()
+    def __call__(model, data_loader, fabric):
+        evaluate(model, data_loader, fabric)
 
 
 @torch.no_grad()
@@ -19,36 +32,46 @@ def evaluate(model, data_loader, fabric):
     captions = []
     pair_ids = []
 
-    for ref_img, tar_feat, caption, pair_id, *_ in data_loader:
+    for batch in data_loader:
+        ref_img = batch["ref_img"]
+        tar_feat = batch["tar_img_feat"]
+        caption = batch["edit"]
+        pair_id = batch["pair_id"]
+
         pair_ids.extend(pair_id.cpu().numpy().tolist())
         captions.extend(caption)
 
         device = ref_img.device
 
-        ref_img_embs = model.visual_encoder(ref_img)
+        ref_img_embs = model.ln_vision(model.visual_encoder(ref_img))
         ref_img_atts = torch.ones(ref_img_embs.size()[:-1], dtype=torch.long).to(device)
 
-        text = model.tokenizer(
+        # Text
+        text_tokens = model.tokenizer(
             caption,
-            padding="longest",
+            padding="max_length",
             truncation=True,
-            max_length=64,
+            max_length=model.max_txt_len,
             return_tensors="pt",
         ).to(device)
 
-        # Shift encoder
-        encoder_input_ids = text.input_ids.clone()
-        encoder_input_ids[:, 0] = model.tokenizer.enc_token_id
-        query_embs = model.text_encoder(
-            encoder_input_ids,
-            attention_mask=text.attention_mask,
+        ###============== Image-text Matching ===================###
+        query_tokens = model.query_tokens.expand(ref_img_embs.shape[0], -1, -1)
+        query_atts = torch.ones(query_tokens.size()[:-1], dtype=torch.long).to(device)
+        attention_mask = torch.cat([query_atts, text_tokens.attention_mask], dim=1)
+        # attention_mask = text_tokens.attention_mask
+
+        output = model.Qformer.bert(
+            text_tokens.input_ids,
+            query_embeds=query_tokens,
+            attention_mask=attention_mask,
             encoder_hidden_states=ref_img_embs,
             encoder_attention_mask=ref_img_atts,
             return_dict=True,
         )
-        query_feat = query_embs.last_hidden_state[:, 0, :]
-        query_feat = F.normalize(model.text_proj(query_feat), dim=-1)
-        query_feats.append(query_feat.cpu())
+        vl_embs = output.last_hidden_state[:, : query_tokens.size(1), :]
+        vl_feat = F.normalize(model.text_proj(vl_embs), dim=-1)
+        query_feats.append(vl_feat.cpu())
 
         # Encode the target image
         tar_img_feats.append(tar_feat.cpu())
@@ -59,19 +82,28 @@ def evaluate(model, data_loader, fabric):
     query_feats = F.normalize(query_feats, dim=-1)
     tar_img_feats = F.normalize(tar_img_feats, dim=-1)
 
+    ref_img_ids = [data_loader.dataset.pairid2ref[pair_id] for pair_id in pair_ids]
+    tar_img_ids = [data_loader.dataset.pairid2tar[pair_id] for pair_id in pair_ids]
+
+    ref_img_ids = torch.tensor(ref_img_ids, dtype=torch.long)
+    tar_img_ids = torch.tensor(tar_img_ids, dtype=torch.long)
+
     if fabric.world_size > 1:
         # Gather tensors from every process
         query_feats = fabric.all_gather(query_feats)
         tar_img_feats = fabric.all_gather(tar_img_feats)
+        ref_img_ids = fabric.all_gather(ref_img_ids)
+        tar_img_ids = fabric.all_gather(tar_img_ids)
 
-        query_feats = einops.rearrange(query_feats, "d b e -> (d b) e")
-        tar_img_feats = einops.rearrange(tar_img_feats, "d b e -> (d b) e")
+        query_feats = einops.rearrange(query_feats, "d b q e -> (d b) q e")
+        tar_img_feats = einops.rearrange(tar_img_feats, "d b q e -> (d b) q e")
+        ref_img_ids = einops.rearrange(ref_img_ids, "d b -> (d b)")
+        tar_img_ids = einops.rearrange(tar_img_ids, "d b -> (d b)")
 
     if fabric.global_rank == 0:
+        tar_img_feats = tar_img_feats.mean(dim=1)
+        query_feats = query_feats.mean(dim=1)
         sim_q2t = (query_feats @ tar_img_feats.t()).cpu().numpy()
-
-        ref_img_ids = [data_loader.dataset.pairid2ref[pair_id] for pair_id in pair_ids]
-        tar_img_ids = [data_loader.dataset.pairid2tar[pair_id] for pair_id in pair_ids]
 
         # Add zeros where ref_img_id == tar_img_id
         for i in range(len(ref_img_ids)):
@@ -94,6 +126,13 @@ def evaluate(model, data_loader, fabric):
                 "val/R_mean": eval_result["R_mean"],
             }
         )
+
+        eval_result = {k: round(v, 2) for k, v in eval_result.items()}
+        eval_result["time"] = total_time_str
+
+        eval_result["annotation"] = Path(data_loader.dataset.annotation_pth).name
+        annotation_name = Path(data_loader.dataset.annotation_pth).stem
+        json_dump(eval_result, f"eval-recalls_{annotation_name}.json")
 
     fabric.barrier()
 

@@ -11,6 +11,8 @@
 ·
 <a href="https://imagine.enpc.fr/~varolg"><strong>G&#252;l Varol</strong></a>
 
+[![AAAI 2024](https://img.shields.io/badge/AAAI-2024-blue)](https://ojs.aaai.org/index.php/AAAI/article/view/28334) [![TPAMI 2024](https://img.shields.io/badge/TPAMI-2024-green)](https://www.computer.org/csdl/journal/tp/5555/01/10685001/20okuQexFXW)
+
 [![arXiv](https://img.shields.io/badge/arXiv-CoVR-9065CA.svg?logo=arXiv)](https://arxiv.org/abs/2308.14746)
 [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=data:image/svg%2bxml;base64,PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KDTwhLS0gVXBsb2FkZWQgdG86IFNWRyBSZXBvLCB3d3cuc3ZncmVwby5jb20sIFRyYW5zZm9ybWVkIGJ5OiBTVkcgUmVwbyBNaXhlciBUb29scyAtLT4KPHN2ZyB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBzdHJva2U9IiMwMDAwMDAiPgoNPGcgaWQ9IlNWR1JlcG9fYmdDYXJyaWVyIiBzdHJva2Utd2lkdGg9IjAiLz4KDTxnIGlkPSJTVkdSZXBvX3RyYWNlckNhcnJpZXIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgoNPGcgaWQ9IlNWR1JlcG9faWNvbkNhcnJpZXIiPiA8cGF0aCBkPSJNMyA2QzMgNC4zNDMxNSA0LjM0MzE1IDMgNiAzSDE0QzE1LjY1NjkgMyAxNyA0LjM0MzE1IDE3IDZWMTRDMTcgMTUuNjU2OSAxNS42NTY5IDE3IDE0IDE3SDZDNC4zNDMxNSAxNyAzIDE1LjY1NjkgMyAxNFY2WiIgc3Ryb2tlPSIjODFhOWQwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPiA8cGF0aCBkPSJNMjEgN1YxOEMyMSAxOS42NTY5IDE5LjY1NjkgMjEgMTggMjFINyIgc3Ryb2tlPSIjODFhOWQwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPiA8cGF0aCBkPSJNOSAxMlY4TDEyLjE0MjkgMTBMOSAxMloiIGZpbGw9IiM4MWE5ZDAiIHN0cm9rZT0iIzgxYTlkMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4gPC9nPgoNPC9zdmc+)](https://imagine.enpc.fr/~ventural/covr/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)]()
@@ -65,22 +67,7 @@ To install the necessary packages, you can use the provided requirements.txt fil
 python -m pip install -r requirements.txt
 ```
 
-Alternatively, you can manually install the following packages inside the conda environment:
-
-```bash
-python -m pip install pytorch_lightning --upgrade
-python -m pip install hydra-core --upgrade
-python -m pip install lightning
-python -m pip install einops
-python -m pip install pandas
-python -m pip install opencv-python
-python -m pip install timm
-python -m pip install fairscale
-python -m pip install tabulate
-python -m pip install transformers
-```
-
-The code was tested on Python 3.8 and PyTorch 2.0.
+The code was tested on Python 3.10 and PyTorch 2.4.
 
 </details>
 
@@ -96,7 +83,16 @@ bash tools/scripts/download_annotation.sh covr
 
 To download the videos, install [`mpi4py`](https://mpi4py.readthedocs.io/en/latest/install.html#) (``conda install -c conda-forge mpi4py``) and run:
 ```bash
+ln -s /path/to/your/datasets/folder datasets
 python tools/scripts/download_covr.py --split=<train, val or test>
+```
+
+### CC-CoIR
+To use the CC-CoIR dataset, you will have to download the Conceptual Caption images and the CC-CoIR annotations.
+
+To download the annotations, run:
+```bash
+bash tools/scripts/download_annotation.sh coir
 ```
 
 ### CIRR
@@ -129,6 +125,11 @@ bash tools/scripts/download_annotation.sh fiq
 
 To download the images, the urls are in the [FashionIQ repository](https://github.com/hongwang600/fashion-iq-metadata/tree/master/image_url). You can use the [this script](https://github.com/yanbeic/VAL/blob/master/download_fashion_iq.py) to download the images. Some missing images can also be found [here](https://github.com/XiaoxiaoGuo/fashion-iq/issues/18). All the images should be placed in the same folder (``datasets/fashion-iq/images``).
 
+
+### CIRCO
+To use the CIRCO dataset, download both the CIRCO images and the CIRCO annotations. Follow the structure provided in the [CIRCO respository](https://github.com/miccunifi/CIRCO.git) and place the files in the ``datasets/`` directory.
+
+
 </details>
 
 
@@ -148,18 +149,47 @@ bash tools/scripts/download_pretrained_models.sh
 
 Before training, you will need to compute the BLIP embeddings for the videos/images. To do so, run:
 ```bash
-# This will compute the embeddings for the WebVid-CoVR videos. 
+# This will compute the BLIP embeddings for the WebVid-CoVR videos. 
 # Note that you can use multiple GPUs with --num_shards and --shard_id
 python tools/embs/save_blip_embs_vids.py --video_dir datasets/WebVid/2M/train --todo_ids annotation/webvid-covr/webvid2m-covr_train.csv 
 
-# This will compute the embeddings for the WebVid-CoVR-Test videos.
+# This will compute the BLIP embeddings for the WebVid-CoVR-Test videos.
 python tools/embs/save_blip_embs_vids.py --video_dir datasets/WebVid/8M/train --todo_ids annotation/webvid-covr/webvid8m-covr_test.csv 
 
-# This will compute the embeddings for the CIRR images.
+# This will compute the BLIP embeddings for the CIRR images.
 python tools/embs/save_blip_embs_imgs.py --image_dir datasets/CIRR/images/
 
-# This will compute the embeddings for FashionIQ images.
+# This will compute the BLIP embeddings for FashionIQ images.
 python tools/embs/save_blip_embs_imgs.py --image_dir datasets/fashion-iq/images/
+
+# This will compute the BLIP embeddings for the WebVid-CoVR modifications text. Only needed if using the caption retrieval loss (model/loss_terms=si_ti+si_tc).
+python tools/embs/save_blip_embs_txts.py annotation/webvid-covr/webvid2m-covr_train.csv datasets/WebVid/2M/blip-vid-embs-large-all
+```
+
+&emsp; 
+</details>
+
+
+<details><summary>Computing BLIP-2 embeddings</summary>
+&emsp; 
+
+Before training, you will need to compute the BLIP-2 embeddings for the videos/images. To do so, run:
+```bash
+# This will compute the BLIP-2 embeddings for the WebVid-CoVR videos. 
+# Note that you can use multiple GPUs with --num_shards and --shard_id
+python tools/embs/save_blip2_embs_vids.py --video_dir datasets/WebVid/2M/train --todo_ids annotation/webvid-covr/webvid2m-covr_train.csv 
+
+# This will compute the BLIP-2 embeddings for the WebVid-CoVR-Test videos.
+python tools/embs/save_blip2_embs_vids.py --video_dir datasets/WebVid/8M/train --todo_ids annotation/webvid-covr/webvid8m-covr_test.csv 
+
+# This will compute the BLIP-2 embeddings for the CIRR images.
+python tools/embs/save_blip2_embs_imgs.py --image_dir datasets/CIRR/images/
+
+# This will compute the BLIP-2 embeddings for FashionIQ images.
+python tools/embs/save_blip2_embs_imgs.py --image_dir datasets/fashion-iq/images/
+
+# This will compute the BLIP-2 embeddings for the WebVid-CoVR modifications text. Only needed if using the caption retrieval loss (model/loss_terms=si_ti+si_tc).
+python tools/embs/save_blip2_embs_txts.py annotation/webvid-covr/webvid2m-covr_train.csv datasets/WebVid/2M/blip2-vid-embs-large-all
 ```
 
 &emsp; 
@@ -194,18 +224,28 @@ python test.py test=<test> [OPTIONS]
 - ``data=webvid-covr``: WebVid-CoVR datasets.
 - ``data=cirr``: CIRR dataset.
 - ``data=fashioniq``: FashionIQ dataset.
+- ``data=cc-coir``: CC-CoIR dataset.
+- ``data=cc-coir+webvid-covr``: WebVid-CoVR and CC-CoIR dataset.
+
+#### Models:
+- ``model=blip-large``: BLIP model.
+- ``model=blip2-coco``: BLIP-2 model. Needs to be used in conjunction with ``model/ckpt=blip2-l-coco`` or BLIP-2 checkpoint.
 
 #### Tests:
 - ``test=all``: Test on WebVid-CoVR, CIRR and all three Fashion-IQ test sets.
 - ``test=webvid-covr``: Test on WebVid-CoVR.
 - ``test=cirr``: Test on CIRR.
 - ``test=fashioniq``: Test on all three Fashion-IQ test sets (``dress``, ``shirt`` and ``toptee``).
+- ``test=circo``: Test on CIRCO.
 
 #### Checkpoints:
 - ``model/ckpt=blip-l-coco``: Default checkpoint for BLIP-L finetuned on COCO.
 - ``model/ckpt=webvid-covr``: Default checkpoint for CoVR finetuned on WebVid-CoVR.
 - ``model/ckpt=fashioniq-all-ft_covr``: Default checkpoint pretrained on WebVid-CoVR and finetuned on FashionIQ.
 - ``model/ckpt=cirr_ft-covr+gt``: Default checkpoint pretrained on WebVid-CoVR and finetuned on CIRR.
+- ``model/ckpt=blip2-l-coco``: Default checkpoint for BLIP-2 L finetuned on COCO.
+- ``model/ckpt=blip2-l-coco_coir``: Default checkpoint for BLIP-2 L pretrained on COCO and finetuned on CC-CoIR.
+- ``model/ckpt=blip2-l-coco_coir+covr``: Default checkpoint for BLIP-2 L pretrained on COCO, finetuned on CC-CoIR and WebVid-CoVR.
 
 #### Training
 - ``trainer=gpu``: training with CUDA, change ``devices`` to the number of GPUs you want to use.
@@ -221,7 +261,7 @@ python test.py test=<test> [OPTIONS]
 - ``machine=server``: You can change the default path to the dataset folder and the batch size. You can create your own machine configuration by adding a new file in ``configs/machine``.
 
 #### Experiment
-There are many pre-defined experiments from the paper in ``configs/experiments``. Simply add ``experiment=<experiment>`` to the command line to use them. 
+There are many pre-defined experiments from the paper in ``configs/experiment`` and ``configs/experiment2``. Simply add ``experiment=<experiment>`` or ``experiment2=<experiment>`` to the command line to use them. 
 
 &emsp; 
 
@@ -231,12 +271,19 @@ There are many pre-defined experiments from the paper in ``configs/experiments``
 If you use this dataset and/or this code in your work, please cite our [paper](https://arxiv.org/abs/2308.14746):
 
 ```bibtex
-@article{ventura23covr,
+@article{ventura24covr,
     title     = {{CoVR}: Learning Composed Video Retrieval from Web Video Captions},
     author    = {Lucas Ventura and Antoine Yang and Cordelia Schmid and G{\"u}l Varol},
     journal   = {AAAI},
     year      = {2024}
   }
+
+@article{ventura24covr2,
+  title = {{CoVR-2}: Automatic Data Construction for Composed Video Retrieval},
+  author = {Lucas Ventura and Antoine Yang and Cordelia Schmid and G{\"u}l Varol},
+  journal = {IEEE TPAMI},
+  year = {2024}
+}
 ```
 
 ## Acknowledgements

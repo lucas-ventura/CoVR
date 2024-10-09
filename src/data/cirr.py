@@ -192,14 +192,20 @@ class CIRRDataset(Dataset):
         caption = pre_caption(ann["caption"], self.max_words)
 
         if self.split == "test":
-            return reference_img, caption, ann["pairid"]
+            return {
+                "ref_img": reference_img,
+                "edit": caption,
+                "pair_id": ann["pairid"],
+            }
 
         target_emb_pth = self.id2embpth[ann["target_hard"]]
-        target_feat = torch.load(target_emb_pth).cpu()
+        target_feat = torch.load(target_emb_pth, weights_only=True).cpu()
 
-        return (
-            reference_img,
-            target_feat,
-            caption,
-            ann["pairid"],
-        )
+        return_dict = {
+            "ref_img": reference_img,
+            "tar_img_feat": target_feat,
+            "edit": caption,
+            "pair_id": ann["pairid"],
+        }
+
+        return return_dict

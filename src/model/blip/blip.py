@@ -6,12 +6,9 @@
 * By Junnan Li
 """
 
+import os
 import warnings
 from pathlib import Path
-
-warnings.filterwarnings("ignore")
-
-import os
 from urllib.parse import urlparse
 
 import torch
@@ -20,8 +17,10 @@ from timm.models.hub import download_cached_file
 from torch import nn
 from transformers import BertTokenizer
 
-from src.model.med import BertConfig, BertLMHeadModel, BertModel
-from src.model.vit import VisionTransformer, interpolate_pos_embed
+from src.model.blip.med import BertConfig, BertLMHeadModel, BertModel
+from src.model.blip.vit import VisionTransformer, interpolate_pos_embed
+
+warnings.filterwarnings("ignore")
 
 
 class BLIP_Base(nn.Module):

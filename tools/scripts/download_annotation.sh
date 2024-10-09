@@ -1,13 +1,16 @@
 #!/bin/bash
 
 if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 [covr|cirr|fiq|all]"
+    echo "Usage: $0 [covr|coir|cirr|fiq|all]"
     exit 1
 fi
 
 case "$1" in
     covr)
         bash tools/scripts/download_annotation_covr.sh
+        ;;
+    coir)
+        bash tools/scripts/download_annotation_coir.sh
         ;;
     cirr)
         bash tools/scripts/download_annotation_cirr.sh
@@ -27,7 +30,7 @@ case "$1" in
         bash tools/scripts/download_annotation_fiq.sh
         ;;
     *)
-        echo "Invalid argument. Usage: $0 [covr|cirr|fiq|all]"
+        echo "Invalid argument. Usage: $0 [covr|coir|cirr|fiq|all]"
         exit 1
         ;;
 esac

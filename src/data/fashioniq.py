@@ -193,6 +193,11 @@ class FashionIQDataset(Dataset):
         caption = pre_caption(caption, self.max_words)
 
         target_emb_pth = self.id2embpth[ann["target"]]
-        target_feat = torch.load(target_emb_pth).cpu()
+        target_feat = torch.load(target_emb_pth, weights_only=True).cpu()
 
-        return (reference_img, target_feat, caption, index)
+        return {
+            "ref_img": reference_img,
+            "tar_img_feat": target_feat,
+            "edit": caption,
+            "pair_id": index,
+        }

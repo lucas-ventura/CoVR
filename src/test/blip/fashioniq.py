@@ -28,7 +28,11 @@ class TestFashionIQ:
         query_feats = []
         captions = []
         idxs = []
-        for ref_img, _, caption, idx in data_loader:
+        for batch in data_loader:
+            ref_img = batch["ref_img"]
+            caption = batch["edit"]
+            idx = batch["pair_id"]
+
             idxs.extend(idx.cpu().numpy().tolist())
             captions.extend(caption)
 
@@ -83,7 +87,7 @@ class TestFashionIQ:
             for target_id in data_loader.dataset.target_ids:
                 tar_img_ids.append(target_id)
                 target_emb_pth = data_loader.dataset.id2embpth[target_id]
-                target_feat = torch.load(target_emb_pth).cpu()
+                target_feat = torch.load(target_emb_pth, weights_only=True).cpu()
                 tar_img_feats.append(target_feat.cpu())
             tar_img_feats = torch.stack(tar_img_feats)
             tar_img_feats = F.normalize(tar_img_feats, dim=-1)
