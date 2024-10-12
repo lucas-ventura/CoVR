@@ -1,16 +1,17 @@
-pytorch_lightning
-spacy
-hydra-core
-lightning
-einops
-pandas
+pytorch-lightning==2.4.0
+lightning-utilities==0.11.6
+lightning==2.3.3
+hydra-core==1.3.2
+spacy==3.7.5
+pandas==2.0.3
 opencv-python-headless==4.5.5.64
-timm==0.4.12
-fairscale
-tabulate
-transformers==4.33.2
-salesforce-lavis
+transformers==4.26.1
+salesforce-lavis==1.0.2
 numpy==1.24.4
-torch
-lightning-utilities
+torch==2.4.0
+
+einops #==0.8.0
+tabulate #==0.9.0
+fairscale #==0.4.4
+timm #==0.4.12
 # pip install git+https://github.com/openai/CLIP.git
