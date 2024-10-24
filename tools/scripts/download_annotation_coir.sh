@@ -9,7 +9,4 @@ mkdir -p annotation/cc-coir
 
 # Download Train annotations
 echo -e "Downloading ${BLUE}CC-CoIR Train${NC} annotations..."
-wget -q --show-progress "https://huggingface.co/lucas-ventura/CoVR/resolve/main/webvid-covr.ckpt" -P annotation/cc-coir/
-
-
-
+wget -q --show-progress https://huggingface.co/datasets/lucas-ventura/CC-CoIR/resolve/main/cc-coir_train.csv -P annotation/cc-coir/
