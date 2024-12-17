@@ -24,7 +24,7 @@ def main(args):
         image_dir=args.image_dir,
         save_dir=args.save_dir,
         todo_ids=args.todo_ids,
-        pixel_size=args.image_size,
+        image_size=args.image_size,
     )
 
     print("Creating model")
@@ -36,7 +36,7 @@ def main(args):
         device=device,
     )
     dataset.transform = vis_processors["eval"]
-    dataset.pixel_size = args.image_size
+    dataset.image_size = args.image_size
 
     loader = torch.utils.data.DataLoader(
         dataset,

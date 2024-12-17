@@ -22,7 +22,7 @@ class ImageDataset(Dataset):
         image_dir,
         save_dir=None,
         todo_ids=None,
-        pixel_size=384,
+        image_size=384,
     ):
         self.image_dir = Path(image_dir)
 
@@ -45,8 +45,7 @@ class ImageDataset(Dataset):
         self.video_ids = list(self.id2pth.keys())
         self.video_ids.sort()
 
-        self.pixel_size = pixel_size
-        self.image_size = self.pixel_size
+        self.image_size = image_size
         self.transform = transforms.Compose(
             [
                 transforms.Resize(
@@ -82,7 +81,7 @@ class ImageDataset(Dataset):
             img = self.transform(img)
         except:  # noqa: E722
             print(f"Image {img_pth} is corrupted")
-            img = torch.zeros((3, self.pixel_size, self.pixel_size))
+            img = torch.zeros((3, self.image_size, self.image_size))
             video_id = "delete"
 
         return img, video_id

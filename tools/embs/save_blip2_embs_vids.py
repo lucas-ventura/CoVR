@@ -53,7 +53,7 @@ def main(args):
         device=device,
     )
     dataset.transform = vis_processors["eval"]
-    dataset.pixel_size = args.image_size
+    dataset.image_size = args.image_size
 
     for video_ids, f_idxs, frames in tqdm(loader):
         frames = frames.to(device)
