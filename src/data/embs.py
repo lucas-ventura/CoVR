@@ -45,6 +45,8 @@ class ImageDataset(Dataset):
         self.video_ids = list(self.id2pth.keys())
         self.video_ids.sort()
 
+        self.pixel_size = pixel_size
+        self.image_size = self.pixel_size
         self.transform = transforms.Compose(
             [
                 transforms.Resize(
@@ -55,7 +57,6 @@ class ImageDataset(Dataset):
                 normalize,
             ]
         )
-        self.pixel_size = pixel_size
 
         if save_dir is not None:
             save_dir = Path(save_dir)
