@@ -183,7 +183,9 @@ python tools/embs/save_blip2_embs_vids.py --video_dir datasets/WebVid/2M/train -
 python tools/embs/save_blip2_embs_vids.py --video_dir datasets/WebVid/8M/train --todo_ids annotation/webvid-covr/webvid8m-covr_test.csv 
 
 # This will compute the BLIP-2 embeddings for the CIRR images.
-python tools/embs/save_blip2_embs_imgs.py --image_dir datasets/CIRR/images/
+python tools/embs/save_blip2_embs_imgs.py --image_dir datasets/CIRR/images/test1 --save_dir datasets/CIRR/blip2-embs-large/test1
+python tools/embs/save_blip2_embs_imgs.py --image_dir datasets/CIRR/images/dev --save_dir datasets/CIRR/blip2-embs-large/dev
+python tools/embs/save_blip2_embs_imgs.py --image_dir datasets/CIRR/images/train --save_dir datasets/CIRR/blip2-embs-large/train
 
 # This will compute the BLIP-2 embeddings for FashionIQ images.
 python tools/embs/save_blip2_embs_imgs.py --image_dir datasets/fashion-iq/images/
