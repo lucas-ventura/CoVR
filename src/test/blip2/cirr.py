@@ -91,6 +91,11 @@ class TestCirr:
             tar_feats = torch.stack(list(id2emb.values()), dim=0).to("cpu")
             vl_feats = vl_feats.to("cpu")
 
+            # Normal way to compute similarity, below has better performance
+            # vl_feats = vl_feats.mean(dim=1)
+            # tar_feats = tar_feats.mean(dim=1)
+            # sims_q2t = torch.einsum("ie,je->ij", vl_feats, tar_feats)
+
             # sims_q2t = torch.einsum("iqe,jke->ijqk", vl_feats, tar_feats)
             # Process in batches to avoid memory issues
             batch_size = 100
