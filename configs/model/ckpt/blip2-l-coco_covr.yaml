@@ -1,0 +1,6 @@
+name: blip2-l-coco_covr
+
+path: ${paths.work_dir}/outputs/webvid-covr/blip2-coco/blip2-l-coco/tv-False_loss-hnnce_lr-2e-05/base/ckpt_4.ckpt
+
+image_size: 364
+
