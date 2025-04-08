@@ -281,10 +281,10 @@ If you use this dataset and/or this code in your work, please cite our [paper](h
   }
 
 @article{ventura24covr2,
-  title = {{CoVR-2}: Automatic Data Construction for Composed Video Retrieval},
-  author = {Lucas Ventura and Antoine Yang and Cordelia Schmid and G{\"u}l Varol},
+  title   = {{CoVR-2}: Automatic Data Construction for Composed Video Retrieval},
+  author  = {Lucas Ventura and Antoine Yang and Cordelia Schmid and G{\"u}l Varol},
   journal = {IEEE TPAMI},
-  year = {2024}
+  year    = {2024}
 }
 ```
 
