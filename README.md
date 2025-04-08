@@ -273,10 +273,10 @@ There are many pre-defined experiments from the paper in ``configs/experiment`` 
 If you use this dataset and/or this code in your work, please cite our [paper](https://arxiv.org/abs/2308.14746):
 
 ```bibtex
-@article{ventura24covr,
+@inproceedings{ventura24covr,
     title     = {{CoVR}: Learning Composed Video Retrieval from Web Video Captions},
     author    = {Lucas Ventura and Antoine Yang and Cordelia Schmid and G{\"u}l Varol},
-    journal   = {AAAI},
+    booktitle = {AAAI},
     year      = {2024}
   }
 
