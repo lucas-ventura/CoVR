@@ -278,7 +278,7 @@ If you use this dataset and/or this code in your work, please cite our [paper](h
   author    = {Lucas Ventura and Antoine Yang and Cordelia Schmid and G{\"u}l Varol},
   booktitle = {AAAI},
   year      = {2024}
-  }
+}
 
 @article{ventura24covr2,
   title   = {{CoVR-2}: Automatic Data Construction for Composed Video Retrieval},
