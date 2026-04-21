@@ -83,6 +83,14 @@ ln -s /path/to/your/datasets/folder datasets
 python tools/scripts/download_covr.py --split=<train, val or test>
 ```
 
+Some original WebVid/Shutterstock URLs are no longer valid and may return HTTP 403.  
+You can download the test set videos from Hugging Face:
+- Repository: [lucas-ventura/WebVid](https://huggingface.co/datasets/lucas-ventura/WebVid/tree/main/)
+- CLI:
+```bash
+hf download lucas-ventura/WebVid --repo-type dataset --local-dir /path/to/your/datasets/folder
+```
+
 ### CC-CoIR
 To use the CC-CoIR dataset, you will have to download the Conceptual Caption images and the CC-CoIR annotations.
 
